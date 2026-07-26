@@ -1,4 +1,3 @@
-import { supabase } from "@/lib/supabase";
 type Product = {
   id: string;
   name: string;
@@ -50,11 +49,7 @@ export default async function ProductPage({
 }) {
   const { id } = await params;
 
- const { data: product } = await supabase
-  .from("products")
-  .select("*")
-  .eq("id", id)
-  .single();
+  const product = products[id];
 
   if (!product) {
     return (
@@ -67,7 +62,7 @@ export default async function ProductPage({
   return (
     <main className="mx-auto max-w-md pb-28">
       <img
-  src={product.image_url}
+  src={product.image}
   alt={product.name}
   className="aspect-[4/3] w-full object-cover"
 />
