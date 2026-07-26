@@ -1,3 +1,5 @@
+import AddToCartButton from "./AddToCartButton";
+
 type Product = {
   id: string;
   name: string;
@@ -144,11 +146,11 @@ export default async function ProductPage({
 
       <div className="fixed bottom-0 left-0 right-0 border-t bg-white p-4">
         <div className="mx-auto max-w-md">
-          <button
-            className="w-full rounded-lg bg-green-600 py-4 text-lg font-semibold text-white"
-          >
-            カートに追加
-          </button>
+          <AddToCartButton
+            id={product.id}
+            name={product.name}
+            price={product.price}
+          />
         </div>
       </div>
     </main>
