@@ -10,8 +10,17 @@ const client = new SquareClient({
       : SquareEnvironment.Sandbox,
 });
 
-export async function POST(req: NextRequest) {
+// 有効な payment_type（"PAYPAY" は非推奨。QR_CODE が PayPay・d払い等をカバー）
+const ALLOWED_PAYMENT_TYPES = new Set([
+  "CARD_PRESENT",
+  "FELICA_ALL",
+  "FELICA_ID",
+  "FELICA_TRANSPORTATION_GROUP",
+  // "FELICA_QUICPAY",  // QUICPay承認メールが届いたらコメント解除
+  "QR_CODE",
+]);
 
+export async function POST(req: NextRequest) {
   const deviceId = process.env.SQUARE_DEVICE_ID;
 
   if (!deviceId) {
@@ -22,22 +31,17 @@ export async function POST(req: NextRequest) {
         message:
           "Square Terminalは未設定です。実機到着後にSQUARE_DEVICE_IDを設定してください。",
       },
-      {
-        status: 503,
-      }
+      { status: 503 }
     );
   }
 
-  // ← この下に今ある処理が続く
   try {
-    
     const { orderId, amount, paymentType } = await req.json();
 
     // 許可された決済方法のみ受け付け（不正値はカードにフォールバック）
-    const resolvedPaymentType =
-      paymentType === "FELICA_ALL" || paymentType === "PAYPAY"
-        ? paymentType
-        : "CARD_PRESENT";
+    const resolvedPaymentType = ALLOWED_PAYMENT_TYPES.has(paymentType)
+      ? paymentType
+      : "CARD_PRESENT";
 
     const response = await client.terminal.checkouts.create({
       idempotencyKey: randomUUID(),
@@ -48,17 +52,17 @@ export async function POST(req: NextRequest) {
           currency: "JPY",
         },
         paymentType: resolvedPaymentType,
-       deviceOptions: {
-  deviceId,
-},
+        deviceOptions: {
+          deviceId,
+        },
       },
     });
 
     return NextResponse.json({
-  success: true,
-  status: response.checkout?.status ?? "PENDING",
-  checkoutId: response.checkout?.id,
-});
+      success: true,
+      status: response.checkout?.status ?? "PENDING",
+      checkoutId: response.checkout?.id,
+    });
   } catch (error) {
     console.error("Terminal API Error:", error);
 

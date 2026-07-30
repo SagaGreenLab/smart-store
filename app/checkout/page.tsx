@@ -11,12 +11,12 @@ type CartItem = {
   quantity: number;
 };
 
-type PaymentType = "CARD_PRESENT" | "FELICA_ALL" | "PAYPAY";
+type PaymentType = "CARD_PRESENT" | "FELICA_ALL" | "QR_CODE";
 
 const PAYMENT_METHODS: { type: PaymentType; label: string; icon: string }[] = [
   { type: "CARD_PRESENT", label: "クレジットカード", icon: "💳" },
-  { type: "FELICA_ALL", label: "電子マネー（iD・QUICPay・交通系）", icon: "📱" },
-  { type: "PAYPAY", label: "PayPay", icon: "🔴" },
+  { type: "FELICA_ALL", label: "電子マネー（交通系・iD）", icon: "📱" },
+  { type: "QR_CODE", label: "QRコード決済（PayPay・d払い）", icon: "📷" },
 ];
 
 export default function CheckoutPage() {
