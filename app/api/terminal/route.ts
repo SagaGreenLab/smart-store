@@ -16,7 +16,7 @@ const ALLOWED_PAYMENT_TYPES = new Set([
   "FELICA_ALL",
   "FELICA_ID",
   "FELICA_TRANSPORTATION_GROUP",
-  // "FELICA_QUICPAY",  // QUICPay承認メールが届いたらコメント解除
+  "FELICA_QUICPAY", // 2026-07-31 QUICPay有効化メール確認済み（佐賀駅）
   "QR_CODE",
 ]);
 

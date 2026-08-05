@@ -26,7 +26,7 @@ const PAYMENT_METHODS: { type: PaymentType; label: string; icon: ReactNode }[] =
   },
   {
     type: "FELICA_ALL",
-    label: "電子マネー（交通系・iD）",
+    label: "電子マネー（交通系・iD・QUICPay）",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 8.5a10 10 0 0 1 20 0" />
@@ -38,7 +38,7 @@ const PAYMENT_METHODS: { type: PaymentType; label: string; icon: ReactNode }[] =
   },
   {
     type: "QR_CODE",
-    label: "QRコード決済（PayPay・d払い）",
+    label: "QRコード決済（PayPay・メルペイ・au PAY・d払い）",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" rx="1" />

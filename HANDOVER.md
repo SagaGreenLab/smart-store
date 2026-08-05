@@ -31,8 +31,10 @@
 - L51Z3TWXMPTWX: 有限会社 第一園芸センター
 
 ## 残タスク
-1. ⏳ 佐賀駅店舗の電子マネー・PayPay審査待ち（Squareダッシュボードで審査中）
-   - 審査完了後はコード変更なしで動作するはず。FELICA_ALL / PAYPAY で1回テスト決済して確認
+1. ✅ 佐賀駅店舗の決済審査完了（2026年8月時点）
+   - QUICPay: 7/31有効化 → FELICA_QUICPAY をallowlistに追加済み（FELICA_ALLでも端末側でブランド選択可）
+   - PayPay: 8/3承認 ／ メルペイ・au PAY: 8月承認 → いずれも QR_CODE でカバー（コード変更不要）
+   - 未実施: FELICA_ALL / QR_CODE で各ブランド1回ずつテスト決済して確認
 2. 📝 Vercel本番デプロイ時：環境変数4点（上記）を設定してRedeploy
 3. （任意）device.code.paired / terminal.checkout.updated のWebhook実装（現在はポーリングなし・レスポンス確認のみ）
 
