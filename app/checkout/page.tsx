@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -13,10 +13,41 @@ type CartItem = {
 
 type PaymentType = "CARD_PRESENT" | "FELICA_ALL" | "QR_CODE";
 
-const PAYMENT_METHODS: { type: PaymentType; label: string; icon: string }[] = [
-  { type: "CARD_PRESENT", label: "クレジットカード", icon: "💳" },
-  { type: "FELICA_ALL", label: "電子マネー（交通系・iD）", icon: "📱" },
-  { type: "QR_CODE", label: "QRコード決済（PayPay・d払い）", icon: "📷" },
+const PAYMENT_METHODS: { type: PaymentType; label: string; icon: ReactNode }[] = [
+  {
+    type: "CARD_PRESENT",
+    label: "クレジットカード",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="4" width="22" height="16" rx="2" />
+        <line x1="1" y1="10" x2="23" y2="10" />
+      </svg>
+    ),
+  },
+  {
+    type: "FELICA_ALL",
+    label: "電子マネー（交通系・iD）",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 8.5a10 10 0 0 1 20 0" />
+        <path d="M5 12a7 7 0 0 1 14 0" />
+        <path d="M8.5 15.5a3.5 3.5 0 0 1 7 0" />
+        <circle cx="12" cy="19" r="1" />
+      </svg>
+    ),
+  },
+  {
+    type: "QR_CODE",
+    label: "QRコード決済（PayPay・d払い）",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <path d="M14 14h3v3h-3zM20 14h1M14 20h1M20 20h1" />
+      </svg>
+    ),
+  },
 ];
 
 export default function CheckoutPage() {
@@ -130,96 +161,120 @@ router.push("/complete");
   };
 
   return (
-    <main className="min-h-screen bg-white p-6">
+    <main className="min-h-screen p-4">
       <div className="mx-auto max-w-md">
-        <div className="mb-6">
-        <div className="flex items-center justify-center gap-2 text-sm">
-          <span className="rounded-full bg-green-600 px-3 py-1 text-white">
+        <div className="mb-4 flex items-center justify-center gap-2 text-xs font-bold">
+          <span className="rounded-full bg-white px-3.5 py-1.5 text-[#98a1b3] shadow-[0_4px_14px_rgba(27,51,92,0.08)]">
             商品
           </span>
 
-          <span className="text-gray-400">→</span>
+          <span className="text-[#98a1b3]">→</span>
 
-          <span className="rounded-full bg-green-600 px-3 py-1 text-white">
+          <span className="rounded-full bg-white px-3.5 py-1.5 text-[#98a1b3] shadow-[0_4px_14px_rgba(27,51,92,0.08)]">
             カート
           </span>
 
-          <span className="text-gray-400">→</span>
+          <span className="text-[#98a1b3]">→</span>
 
-          <span className="rounded-full bg-blue-600 px-3 py-1 font-semibold text-white">
+          <span className="rounded-full bg-[#4fa8f0] px-3.5 py-1.5 text-white">
             お支払い
           </span>
         </div>
-      </div>
-        <h1 className="mb-8 text-3xl font-bold">💳 お支払い</h1>
 
-        <div className="rounded-2xl border p-6 shadow-sm">
-          <p className="text-lg">お支払い金額</p>
+        <h1 className="mb-4 px-1 text-xl font-extrabold text-[#1b2333]">お支払い</h1>
 
-          <p className="mt-4 text-4xl font-bold">
-            ¥{total.toLocaleString()}
+        <div className="rounded-3xl bg-white p-6 shadow-[0_8px_28px_rgba(27,51,92,0.08)]">
+          <p className="text-sm text-[#6b7486]">お支払い金額</p>
+
+          <p className="mt-1 flex items-baseline gap-1 text-[#1b2333]">
+            <span className="text-xl font-bold">¥</span>
+            <span className="text-4xl font-extrabold tabular-nums">
+              {total.toLocaleString()}
+            </span>
+          </p>
+
+          <p className="mt-1 text-xs text-[#98a1b3]">
+            税込 ・ {cart.reduce((sum, item) => sum + item.quantity, 0)}点
           </p>
         </div>
 
-        <div className="mt-6 rounded-2xl border p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold">購入商品</h2>
+        <div className="mt-4 rounded-3xl bg-white p-6 shadow-[0_8px_28px_rgba(27,51,92,0.08)]">
+          <h2 className="mb-3 text-xs font-bold tracking-wider text-[#98a1b3]">
+            購入商品
+          </h2>
 
-       {cart.length === 0 ? (
-  <p className="text-gray-500">商品がありません</p>
-) : (
-  <>
-    <ul className="space-y-3">
-      {cart.map((item) => (
-        <li
-          key={item.id}
-          className="flex justify-between border-b pb-2"
-        >
-          <div>
-            <p className="font-medium">{item.name}</p>
-            <p className="text-sm text-gray-500">
-              ¥{item.price.toLocaleString()} × {item.quantity}
-            </p>
-          </div>
+          {cart.length === 0 ? (
+            <p className="text-[#98a1b3]">商品がありません</p>
+          ) : (
+            <>
+              <ul>
+                {cart.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex items-start justify-between border-b border-[#eef1f6] py-2.5"
+                  >
+                    <div>
+                      <p className="text-[15px] font-semibold text-[#1b2333]">
+                        {item.name}
+                      </p>
+                      <p className="mt-0.5 text-xs text-[#98a1b3]">
+                        ¥{item.price.toLocaleString()} × {item.quantity}
+                      </p>
+                    </div>
 
-          <p className="font-semibold">
-            ¥{(item.price * item.quantity).toLocaleString()}
-          </p>
-        </li>
-      ))}
-    </ul>
-<div className="mt-4 flex justify-between text-sm text-gray-600">
-  <span>商品点数</span>
-  <span>
-    {cart.reduce((sum, item) => sum + item.quantity, 0)}点
-  </span>
-</div>
-    <div className="mt-4 flex justify-between border-t pt-4 text-lg font-bold">
-      <span>合計</span>
-      <span>¥{total.toLocaleString()}</span>
-    </div>
-    </>
-)}
+                    <p className="text-[15px] font-bold tabular-nums text-[#1b2333]">
+                      ¥{(item.price * item.quantity).toLocaleString()}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex justify-between border-b border-[#eef1f6] py-2.5 text-sm text-[#6b7486]">
+                <span>商品点数</span>
+                <span>
+                  {cart.reduce((sum, item) => sum + item.quantity, 0)}点
+                </span>
+              </div>
+
+              <div className="flex items-baseline justify-between pt-3.5">
+                <span className="text-[15px] font-bold text-[#1b2333]">合計</span>
+                <span className="text-2xl font-extrabold tabular-nums text-[#2483d6]">
+                  ¥{total.toLocaleString()}
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
-        <div className="mt-6 rounded-2xl border p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold">お支払い方法</h2>
+        <div className="mt-4 rounded-3xl bg-white p-6 shadow-[0_8px_28px_rgba(27,51,92,0.08)]">
+          <h2 className="mb-3 text-xs font-bold tracking-wider text-[#98a1b3]">
+            お支払い方法
+          </h2>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {PAYMENT_METHODS.map((method) => (
               <button
                 key={method.type}
                 type="button"
                 onClick={() => setPaymentType(method.type)}
-                className={`flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-base font-medium ${
+                className={`flex w-full items-center gap-3 rounded-2xl border-[1.5px] px-4 py-3.5 text-left text-sm font-semibold text-[#1b2333] transition-colors ${
                   paymentType === method.type
-                    ? "border-green-600 bg-green-50"
-                    : "border-gray-200 hover:bg-gray-50"
+                    ? "border-[#4fa8f0] bg-[#edf6fe]"
+                    : "border-[#e3e8f0] bg-white hover:bg-[#f4f6fa]"
                 }`}
               >
-                <span className="text-2xl">{method.icon}</span>
-                <span>{method.label}</span>
+                <span
+                  className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[#2483d6] ${
+                    paymentType === method.type ? "bg-white" : "bg-[#f4f6fa]"
+                  }`}
+                >
+                  {method.icon}
+                </span>
+                <span className="flex-1">{method.label}</span>
                 {paymentType === method.type && (
-                  <span className="ml-auto text-green-600">✓</span>
+                  <svg className="shrink-0 text-[#2483d6]" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
                 )}
               </button>
             ))}
@@ -229,35 +284,37 @@ router.push("/complete");
         <button
           onClick={handleCheckout}
           disabled={loading || total === 0}
-          className={`mt-8 w-full rounded-xl px-4 py-4 text-xl font-semibold text-white ${
+          className={`mt-6 w-full rounded-2xl px-4 py-4 text-base font-bold text-white transition-colors ${
             loading || total === 0
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700"
+              ? "cursor-not-allowed bg-[#b9c4d6]"
+              : "bg-[#4fa8f0] hover:bg-[#2f93e6] active:bg-[#2f93e6]"
           }`}
         >
           {loading
-  ? "通信中..."
-  : `Squareで支払う（税込 ¥${total.toLocaleString()}）`}
+            ? "通信中..."
+            : `Squareで支払う（税込 ¥${total.toLocaleString()}）`}
         </button>
 
         <Link
           href="/cart"
-          className="mt-4 block w-full rounded-xl border border-gray-300 px-4 py-4 text-center text-lg font-medium hover:bg-gray-100"
+          className="mt-3 block w-full rounded-2xl py-3 text-center text-sm font-semibold text-[#6b7486] hover:text-[#1b2333]"
         >
           カートへ戻る
         </Link>
 
         {status && (
-          <div className={`mt-6 rounded-lg border p-4 ${
-  status.includes("未設定")
-    ? "border-yellow-300 bg-yellow-50"
-    : status.includes("エラー")
-    ? "border-red-300 bg-red-50"
-    : "border-green-300 bg-green-50"
-}`}>
-            <p className="font-semibold">決済ステータス</p>
+          <div
+            className={`mt-4 rounded-2xl border p-4 ${
+              status.includes("未設定")
+                ? "border-yellow-300 bg-yellow-50"
+                : status.includes("エラー")
+                ? "border-red-300 bg-red-50"
+                : "border-[#d5eafc] bg-[#edf6fe]"
+            }`}
+          >
+            <p className="text-sm font-bold text-[#1b2333]">決済ステータス</p>
 
-            <pre className="mt-2 whitespace-pre-wrap break-all text-sm">
+            <pre className="mt-2 whitespace-pre-wrap break-all text-sm text-[#6b7486]">
               {status}
             </pre>
           </div>

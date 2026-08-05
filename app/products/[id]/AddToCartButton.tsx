@@ -38,7 +38,7 @@ export default function AddToCartButton({ id, name, price }: Props) {
     <button
       type="button"
       onClick={addToCart}
-      className="w-full rounded-lg bg-green-600 py-4 text-lg font-semibold text-white"
+      className="flex-1 rounded-2xl bg-[#4fa8f0] py-4 text-base font-bold text-white transition-colors hover:bg-[#2f93e6] active:bg-[#2f93e6]"
     >
       カートに追加
     </button>

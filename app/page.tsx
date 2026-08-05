@@ -34,29 +34,40 @@ router.push("/cart");
   };
 
   return (
-    <main className="min-h-screen bg-white p-6">
+    <main className="min-h-screen p-4">
       <div className="mx-auto max-w-md">
-        <h1 className="mb-8 text-3xl font-bold">
-          🌿 商品一覧
-        </h1>
+        <div className="mb-4 flex items-center justify-between px-1 pt-1">
+          <h1 className="text-xl font-extrabold text-[#1b2333]">商品一覧</h1>
 
-        <div className="space-y-4">
+          <span className="text-xs font-bold tracking-wider text-[#98a1b3]">
+            MINI GREEN SHOP
+          </span>
+        </div>
+
+        <div className="space-y-3">
           {products.map((product) => (
             <div
               key={product.id}
-              className="rounded-2xl border p-5 shadow-sm"
+              className="rounded-3xl bg-white p-5 shadow-[0_8px_28px_rgba(27,51,92,0.08)]"
             >
-              <h2 className="text-xl font-semibold">
-                {product.name}
-              </h2>
+              <div className="flex items-baseline justify-between">
+                <h2 className="text-[15px] font-bold text-[#1b2333]">
+                  {product.name}
+                </h2>
 
-              <p className="mt-2 text-lg text-gray-600">
-                ¥{product.price.toLocaleString()}
-              </p>
+                <p className="flex items-baseline gap-0.5 text-[#1b2333]">
+                  <span className="text-sm font-bold">¥</span>
+                  <span className="text-2xl font-extrabold tabular-nums">
+                    {product.price.toLocaleString()}
+                  </span>
+                </p>
+              </div>
+
+              <p className="mt-0.5 text-right text-xs text-[#98a1b3]">税込</p>
 
               <button
                 onClick={() => addToCart(product)}
-                className="mt-4 w-full rounded-xl bg-green-600 px-4 py-3 font-semibold text-white"
+                className="mt-3 w-full rounded-2xl bg-[#4fa8f0] px-4 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#2f93e6] active:bg-[#2f93e6]"
               >
                 カートに入れる
               </button>
