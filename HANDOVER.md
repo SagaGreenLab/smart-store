@@ -31,9 +31,12 @@
 - L51Z3TWXMPTWX: 有限会社 第一園芸センター
 
 ## 残タスク
-1. ✅ 佐賀駅店舗の決済審査完了（2026年8月時点）
-   - QUICPay: 7/31有効化 → FELICA_QUICPAY をallowlistに追加済み（FELICA_ALLでも端末側でブランド選択可）
-   - PayPay: 8/3承認 ／ メルペイ・au PAY: 8月承認 → いずれも QR_CODE でカバー（コード変更不要）
+1. ✅ 佐賀駅店舗の決済審査完了（2026年8月時点・全ブランド利用可）
+   - CARD_PRESENT: VISA / Mastercard / American Express / JCB / Diners Club / Discover / Apple Pay / タッチ決済
+   - FELICA_ALL: iD / QUICPay+ / 交通系IC（Suica・SUGOCA・nimoca・はやかけん・PASMO・ICOCA・Kitaca・TOICA・manaca）※PiTaPa除く
+     - QUICPay は 7/31 有効化 → FELICA_QUICPAY もallowlistに追加済み
+   - QR_CODE: PayPay / d払い / 楽天ペイ / au PAY / メルペイ / WeChat Pay / Alipay+
+   - 上記ブランドは checkout ページにバッジ表示済み（app/checkout/page.tsx の PAYMENT_METHODS）
    - 未実施: FELICA_ALL / QR_CODE で各ブランド1回ずつテスト決済して確認
 2. 📝 Vercel本番デプロイ時：環境変数4点（上記）を設定してRedeploy
 3. （任意）device.code.paired / terminal.checkout.updated のWebhook実装（現在はポーリングなし・レスポンス確認のみ）

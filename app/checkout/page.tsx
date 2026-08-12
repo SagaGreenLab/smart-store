@@ -13,10 +13,28 @@ type CartItem = {
 
 type PaymentType = "CARD_PRESENT" | "FELICA_ALL" | "QR_CODE";
 
-const PAYMENT_METHODS: { type: PaymentType; label: string; icon: ReactNode }[] = [
+type PaymentMethod = {
+  type: PaymentType;
+  label: string;
+  brands: string[];
+  note?: string;
+  icon: ReactNode;
+};
+
+const PAYMENT_METHODS: PaymentMethod[] = [
   {
     type: "CARD_PRESENT",
-    label: "クレジットカード",
+    label: "クレジット / デビットカード",
+    brands: [
+      "VISA",
+      "Mastercard",
+      "American Express",
+      "JCB",
+      "Diners Club",
+      "Discover",
+      "Apple Pay",
+      "タッチ決済",
+    ],
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="1" y="4" width="22" height="16" rx="2" />
@@ -26,7 +44,21 @@ const PAYMENT_METHODS: { type: PaymentType; label: string; icon: ReactNode }[] =
   },
   {
     type: "FELICA_ALL",
-    label: "電子マネー（交通系・iD・QUICPay）",
+    label: "電子マネー・交通系IC",
+    brands: [
+      "iD",
+      "QUICPay+",
+      "Suica",
+      "SUGOCA",
+      "nimoca",
+      "はやかけん",
+      "PASMO",
+      "ICOCA",
+      "Kitaca",
+      "TOICA",
+      "manaca",
+    ],
+    note: "※PiTaPaは対象外です",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 8.5a10 10 0 0 1 20 0" />
@@ -38,7 +70,16 @@ const PAYMENT_METHODS: { type: PaymentType; label: string; icon: ReactNode }[] =
   },
   {
     type: "QR_CODE",
-    label: "QRコード決済（PayPay・メルペイ・au PAY・d払い）",
+    label: "QRコード決済",
+    brands: [
+      "PayPay",
+      "d払い",
+      "楽天ペイ",
+      "au PAY",
+      "メルペイ",
+      "WeChat Pay",
+      "Alipay+",
+    ],
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -257,24 +298,49 @@ router.push("/complete");
                 key={method.type}
                 type="button"
                 onClick={() => setPaymentType(method.type)}
-                className={`flex w-full items-center gap-3 rounded-2xl border-[1.5px] px-4 py-3.5 text-left text-sm font-semibold text-[#1b2333] transition-colors ${
+                className={`w-full rounded-2xl border-[1.5px] px-4 py-3.5 text-left transition-colors ${
                   paymentType === method.type
                     ? "border-[#4fa8f0] bg-[#edf6fe]"
                     : "border-[#e3e8f0] bg-white hover:bg-[#f4f6fa]"
                 }`}
               >
-                <span
-                  className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[#2483d6] ${
-                    paymentType === method.type ? "bg-white" : "bg-[#f4f6fa]"
-                  }`}
-                >
-                  {method.icon}
+                <span className="flex items-center gap-3">
+                  <span
+                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[#2483d6] ${
+                      paymentType === method.type ? "bg-white" : "bg-[#f4f6fa]"
+                    }`}
+                  >
+                    {method.icon}
+                  </span>
+                  <span className="flex-1 text-sm font-semibold text-[#1b2333]">
+                    {method.label}
+                  </span>
+                  {paymentType === method.type && (
+                    <svg className="shrink-0 text-[#2483d6]" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  )}
                 </span>
-                <span className="flex-1">{method.label}</span>
-                {paymentType === method.type && (
-                  <svg className="shrink-0 text-[#2483d6]" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
+
+                <span className="mt-2.5 flex flex-wrap gap-1.5 pl-12">
+                  {method.brands.map((brand) => (
+                    <span
+                      key={brand}
+                      className={`rounded-md px-1.5 py-0.5 text-[11px] font-semibold leading-tight ${
+                        paymentType === method.type
+                          ? "bg-white text-[#4a5568]"
+                          : "bg-[#f4f6fa] text-[#6b7486]"
+                      }`}
+                    >
+                      {brand}
+                    </span>
+                  ))}
+                </span>
+
+                {method.note && (
+                  <span className="mt-1.5 block pl-12 text-[10px] text-[#98a1b3]">
+                    {method.note}
+                  </span>
                 )}
               </button>
             ))}
