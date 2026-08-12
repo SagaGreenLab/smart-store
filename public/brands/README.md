@@ -1,15 +1,21 @@
 # 決済ブランドロゴの置き場所
 
-## 1. 公式ロゴ一覧画像（掲載中）
+## 1. 公式ロゴ画像
 
-`square-payment-brands.png` — Square公式のデジタル素材（PNG / 4097×1211）。
-チェックアウト画面の「対応決済ブランド」欄に、原寸比のまま掲載しています。
+いずれも出典は [Squareのデジタル素材をダウンロードする](https://squareup.com/help/jp/ja/article/8592-download-square-digital-materials)。
 
-- 出典: [Squareのデジタル素材をダウンロードする](https://squareup.com/help/jp/ja/article/8592-download-square-digital-materials)
-  の「7つのクレジットカードブランド、電子マネー、QRコード決済アプリ」
-- 収録ブランド: VISA / Mastercard / American Express / JCB / Diners Club /
-  Discover / UnionPay（銀聯）/ 交通系電子マネー9種 / PayPay / d払い / 楽天ペイ /
-  au PAY / メルペイ / WeChat Pay / Alipay+ / iD / QUICPay+
+| ファイル | サイズ | 元の見出し | 使用箇所 |
+| --- | --- | --- | --- |
+| `square-cards.png` | 3041×461 | 7つのクレジットカードブランド | カード決済ボタンの直下（掲載中） |
+| `square-transit-ic.png` | 3040×461 | 電子マネーのロゴマーク | 電子マネーボタンの直下（掲載中） |
+| `square-payment-brands.png` | 4097×1211 | 7つのクレジットカードブランド、電子マネー、QRコード決済アプリ | 予備（全ブランド一枚もの） |
+
+- `square-cards.png`: Square / VISA / Mastercard / American Express / JCB /
+  Diners Club / Discover / UnionPay（銀聯）
+- `square-transit-ic.png`: Suica / PASMO / Kitaca / TOICA / manaca / ICOCA /
+  SUGOCA / nimoca / はやかけん（PiTaPa除外の注記入り）
+- QRコード決済に相当する単独の公式画像はSquareから提供されていないため、
+  QRのボタンはカラーバッジのみ
 
 ### 利用上の制約（Squareの規定）
 
