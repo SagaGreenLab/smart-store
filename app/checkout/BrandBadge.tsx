@@ -8,8 +8,21 @@ import type { Brand } from "@/lib/payment-brands";
  * brand.logo が指定されている場合のみロゴ画像を表示し、
  * 未指定または読み込み失敗時はブランドカラーの文字バッジを表示する。
  */
-export default function BrandBadge({ brand }: { brand: Brand }) {
+export default function BrandBadge({
+  brand,
+  size = "sm",
+}: {
+  brand: Brand;
+  /** sm: 通常 / lg: 公式ロゴ画像が無いブランドを目立たせる用 */
+  size?: "sm" | "lg";
+}) {
   const [logoFailed, setLogoFailed] = useState(false);
+
+  const imgSize = size === "lg" ? "h-10" : "h-7";
+  const badgeSize =
+    size === "lg"
+      ? "h-10 rounded-lg px-3.5 text-sm"
+      : "h-7 rounded-md px-2 text-[11px]";
 
   if (brand.logo && !logoFailed) {
     return (
@@ -17,7 +30,7 @@ export default function BrandBadge({ brand }: { brand: Brand }) {
       <img
         src={brand.logo}
         alt={brand.label}
-        className="h-7 w-auto rounded-md bg-white object-contain"
+        className={`${imgSize} w-auto rounded-md bg-white object-contain`}
         onError={() => setLogoFailed(true)}
       />
     );
@@ -26,7 +39,7 @@ export default function BrandBadge({ brand }: { brand: Brand }) {
   return (
     <span
       style={{ backgroundColor: brand.color }}
-      className="inline-flex h-7 items-center rounded-md px-2 text-[11px] font-semibold leading-none text-white"
+      className={`inline-flex items-center font-semibold leading-none text-white ${badgeSize}`}
     >
       {brand.label}
     </span>

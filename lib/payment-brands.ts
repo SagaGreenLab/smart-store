@@ -31,9 +31,18 @@ export const CARD_BRANDS: Brand[] = [
   { slug: "contactless", label: "タッチ決済", color: "#5f6c7f" },
 ];
 
+/**
+ * 電子マネーのうち、Square公式のロゴ画像が存在しないブランド。
+ * 交通系ICは square-transit-ic.png（公式画像）でカバーするため、
+ * ここには含めずバッジ表示はiD / QUICPay+のみとする。
+ */
 export const EMONEY_BRANDS: Brand[] = [
   { slug: "id", label: "iD", color: "#d97706" },
   { slug: "quicpay", label: "QUICPay+", color: "#0068b7" },
+];
+
+/** 交通系IC（表示は square-transit-ic.png が担当。alt文言や資料用に保持） */
+export const TRANSIT_IC_BRANDS: Brand[] = [
   { slug: "suica", label: "Suica", color: "#1f8a3d" },
   { slug: "sugoca", label: "SUGOCA", color: "#c8006b" },
   { slug: "nimoca", label: "nimoca", color: "#0079b8" },

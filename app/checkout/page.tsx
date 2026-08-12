@@ -28,6 +28,8 @@ type PaymentMethod = {
   icon: ReactNode;
   /** Square公式のロゴ素材（改変不可・原寸比のまま表示）。無い区分は未指定 */
   officialLogo?: { src: string; alt: string };
+  /** バッジを大きめに表示する（公式ロゴ画像が無いブランドの視認性確保用） */
+  largeBadges?: boolean;
 };
 
 const PAYMENT_METHODS: PaymentMethod[] = [
@@ -50,6 +52,7 @@ const PAYMENT_METHODS: PaymentMethod[] = [
     type: "FELICA_ALL",
     label: "電子マネー・交通系IC",
     brands: EMONEY_BRANDS,
+    largeBadges: true,
     note: "※PiTaPaは対象外です",
     officialLogo: {
       src: "/brands/square-transit-ic.png",
@@ -312,7 +315,11 @@ router.push("/complete");
 
                 <span className="mt-2.5 flex flex-wrap items-center gap-1.5 pl-12">
                   {method.brands.map((brand) => (
-                    <BrandBadge key={brand.slug} brand={brand} />
+                    <BrandBadge
+                      key={brand.slug}
+                      brand={brand}
+                      size={method.largeBadges ? "lg" : "sm"}
+                    />
                   ))}
                 </span>
 
