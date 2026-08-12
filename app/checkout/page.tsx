@@ -3,6 +3,13 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import BrandBadge from "./BrandBadge";
+import {
+  CARD_BRANDS,
+  EMONEY_BRANDS,
+  QR_BRANDS,
+  type Brand,
+} from "@/lib/payment-brands";
 
 type CartItem = {
   id: number;
@@ -16,7 +23,7 @@ type PaymentType = "CARD_PRESENT" | "FELICA_ALL" | "QR_CODE";
 type PaymentMethod = {
   type: PaymentType;
   label: string;
-  brands: string[];
+  brands: Brand[];
   note?: string;
   icon: ReactNode;
 };
@@ -25,16 +32,7 @@ const PAYMENT_METHODS: PaymentMethod[] = [
   {
     type: "CARD_PRESENT",
     label: "クレジット / デビットカード",
-    brands: [
-      "VISA",
-      "Mastercard",
-      "American Express",
-      "JCB",
-      "Diners Club",
-      "Discover",
-      "Apple Pay",
-      "タッチ決済",
-    ],
+    brands: CARD_BRANDS,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="1" y="4" width="22" height="16" rx="2" />
@@ -45,19 +43,7 @@ const PAYMENT_METHODS: PaymentMethod[] = [
   {
     type: "FELICA_ALL",
     label: "電子マネー・交通系IC",
-    brands: [
-      "iD",
-      "QUICPay+",
-      "Suica",
-      "SUGOCA",
-      "nimoca",
-      "はやかけん",
-      "PASMO",
-      "ICOCA",
-      "Kitaca",
-      "TOICA",
-      "manaca",
-    ],
+    brands: EMONEY_BRANDS,
     note: "※PiTaPaは対象外です",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -71,15 +57,7 @@ const PAYMENT_METHODS: PaymentMethod[] = [
   {
     type: "QR_CODE",
     label: "QRコード決済",
-    brands: [
-      "PayPay",
-      "d払い",
-      "楽天ペイ",
-      "au PAY",
-      "メルペイ",
-      "WeChat Pay",
-      "Alipay+",
-    ],
+    brands: QR_BRANDS,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -322,18 +300,9 @@ router.push("/complete");
                   )}
                 </span>
 
-                <span className="mt-2.5 flex flex-wrap gap-1.5 pl-12">
+                <span className="mt-2.5 flex flex-wrap items-center gap-1.5 pl-12">
                   {method.brands.map((brand) => (
-                    <span
-                      key={brand}
-                      className={`rounded-md px-1.5 py-0.5 text-[11px] font-semibold leading-tight ${
-                        paymentType === method.type
-                          ? "bg-white text-[#4a5568]"
-                          : "bg-[#f4f6fa] text-[#6b7486]"
-                      }`}
-                    >
-                      {brand}
-                    </span>
+                    <BrandBadge key={brand.slug} brand={brand} />
                   ))}
                 </span>
 
@@ -344,6 +313,31 @@ router.push("/complete");
                 )}
               </button>
             ))}
+          </div>
+
+          <div className="mt-5 border-t border-[#eef1f6] pt-4">
+            <h3 className="mb-2 text-xs font-bold tracking-wider text-[#98a1b3]">
+              対応決済ブランド
+            </h3>
+
+            {/* Square公式のロゴ素材。改変・切り抜き不可のため原寸比のまま掲載 */}
+            <div className="-mx-6 overflow-x-auto px-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brands/square-payment-brands.png"
+                alt="対応決済ブランド一覧：VISA、Mastercard、American Express、JCB、Diners Club、Discover、UnionPay（銀聯）、交通系電子マネー（Kitaca・Suica・PASMO・TOICA・manaca・ICOCA・SUGOCA・nimoca・はやかけん）、PayPay、d払い、楽天ペイ、au PAY、メルペイ、WeChat Pay、Alipay+、iD、QUICPay+"
+                className="h-40 w-auto max-w-none"
+              />
+            </div>
+
+            <p className="mt-1.5 flex items-center gap-1 text-[10px] text-[#98a1b3]">
+              <span>横にスクロールできます</span>
+              <span aria-hidden="true">→</span>
+            </p>
+
+            <p className="mt-0.5 text-[10px] text-[#98a1b3]">
+              ※交通系電子マネーのうちPiTaPaは対象外です
+            </p>
           </div>
         </div>
 
