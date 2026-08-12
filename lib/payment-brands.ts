@@ -1,13 +1,14 @@
 /**
  * 決済ブランド定義
  *
- * slug  : public/brands/{slug}.svg（または .png）のファイル名と対応
- * label : ロゴ画像が無いときに表示する文字
- * color : ロゴ画像が無いときのバッジ背景色（各社のブランドカラー）
+ * slug  : 識別子
+ * label : バッジに表示する文字
+ * color : バッジ背景色（各社のブランドカラー）
+ * logo  : （任意）public/ 配下のロゴ画像パス。指定した場合のみ画像表示になる。
+ *         未指定＝カラーバッジ表示。存在しないパスを指定すると
+ *         読み込み失敗までの間に壊れた画像が出るため、必ず実在するファイルだけ指定すること。
  *
- * public/brands/ にロゴ画像を置くと自動でロゴ表示に切り替わります。
- * 画像が無いブランドはカラーバッジのまま表示されるため、
- * 1ファイルずつ追加していけばOKです。詳細は public/brands/README.md を参照。
+ * 個別ロゴを追加する手順は public/brands/README.md を参照。
  */
 
 export type PaymentTypeKey = "CARD_PRESENT" | "FELICA_ALL" | "QR_CODE";
@@ -16,6 +17,7 @@ export type Brand = {
   slug: string;
   label: string;
   color: string;
+  logo?: string;
 };
 
 export const CARD_BRANDS: Brand[] = [

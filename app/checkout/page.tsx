@@ -320,22 +320,15 @@ router.push("/complete");
               対応決済ブランド
             </h3>
 
-            {/* Square公式のロゴ素材。改変・切り抜き不可のため原寸比のまま掲載 */}
-            <div className="-mx-6 overflow-x-auto px-6">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/brands/square-payment-brands.png"
-                alt="対応決済ブランド一覧：VISA、Mastercard、American Express、JCB、Diners Club、Discover、UnionPay（銀聯）、交通系電子マネー（Kitaca・Suica・PASMO・TOICA・manaca・ICOCA・SUGOCA・nimoca・はやかけん）、PayPay、d払い、楽天ペイ、au PAY、メルペイ、WeChat Pay、Alipay+、iD、QUICPay+"
-                className="h-40 w-auto max-w-none"
-              />
-            </div>
+            {/* Square公式のロゴ素材。改変・切り抜き不可のため原寸比のまま全体を表示 */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brands/square-payment-brands.png"
+              alt="対応決済ブランド一覧：VISA、Mastercard、American Express、JCB、Diners Club、Discover、UnionPay（銀聯）、交通系電子マネー（Kitaca・Suica・PASMO・TOICA・manaca・ICOCA・SUGOCA・nimoca・はやかけん）、PayPay、d払い、楽天ペイ、au PAY、メルペイ、WeChat Pay、Alipay+、iD、QUICPay+"
+              className="block h-auto w-full"
+            />
 
-            <p className="mt-1.5 flex items-center gap-1 text-[10px] text-[#98a1b3]">
-              <span>横にスクロールできます</span>
-              <span aria-hidden="true">→</span>
-            </p>
-
-            <p className="mt-0.5 text-[10px] text-[#98a1b3]">
+            <p className="mt-1.5 text-[10px] text-[#98a1b3]">
               ※交通系電子マネーのうちPiTaPaは対象外です
             </p>
           </div>
