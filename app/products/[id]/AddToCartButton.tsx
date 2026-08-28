@@ -1,46 +1,72 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { addToCart } from "@/lib/cart";
+import { NoCashAlert } from "@/components/Brand";
 
-type Props = {
+/** 数量ステッパー ＋ カートに入れる（① 商品ページの下部） */
+export default function AddToCartButton({
+  id,
+  name,
+  price,
+}: {
   id: string;
   name: string;
   price: number;
-};
-
-type CartItem = {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-};
-
-export default function AddToCartButton({ id, name, price }: Props) {
+}) {
   const router = useRouter();
+  const [quantity, setQuantity] = useState(1);
+  const [busy, setBusy] = useState(false);
 
-  const addToCart = () => {
-    const saved = localStorage.getItem("cart");
-    const cart: CartItem[] = saved ? JSON.parse(saved) : [];
+  const handleClick = () => {
+    if (busy) return;
 
-    const existing = cart.find((item) => item.id === id);
-
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.push({ id, name, price, quantity: 1 });
+    setBusy(true);
+    for (let i = 0; i < quantity; i += 1) {
+      addToCart({ id, name, price });
     }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
     router.push("/cart");
   };
 
   return (
-    <button
-      type="button"
-      onClick={addToCart}
-      className="flex-1 rounded-2xl bg-[#4fa8f0] py-4 text-base font-bold text-white transition-colors hover:bg-[#2f93e6] active:bg-[#2f93e6]"
-    >
-      カートに追加
-    </button>
+    <>
+      <div className="dg-qty">
+        <span className="label">数量</span>
+
+        <span className="ctrl">
+          <button
+            type="button"
+            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            aria-label="数量を1つ減らす"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+          <span className="num">{quantity}</span>
+          <button
+            type="button"
+            onClick={() => setQuantity((q) => Math.min(9, q + 1))}
+            aria-label="数量を1つ増やす"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+        </span>
+      </div>
+
+      <div className="dg-mt-3">
+        <button type="button" onClick={handleClick} disabled={busy} className="dg-btn">
+          {busy ? "カートへ移動しています…" : "カートに入れる"}
+        </button>
+      </div>
+
+      <div className="dg-mt-2">
+        <NoCashAlert />
+      </div>
+    </>
   );
 }
