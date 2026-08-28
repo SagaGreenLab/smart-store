@@ -7,6 +7,8 @@
  * 初回レンダーが必ず空カートになるため採らない。
  */
 
+import { findProduct } from "./products";
+
 export type CartItem = {
   id: string;
   name: string;
@@ -48,7 +50,7 @@ export const subscribeLastOrder = subscribeStorage;
  * 返さないと無限ループになる。生の文字列をキャッシュして、
  * 変化したときだけ parse し直す。
  */
-function cachedSnapshot<T>(key: string, fallback: T) {
+function cachedSnapshot<T>(key: string, fallback: T, transform: (v: unknown) => T) {
   let rawCache: string | null = null;
   let valueCache: T = fallback;
   let primed = false;
@@ -69,7 +71,7 @@ function cachedSnapshot<T>(key: string, fallback: T) {
     primed = true;
 
     try {
-      valueCache = raw ? (JSON.parse(raw) as T) : fallback;
+      valueCache = raw ? transform(JSON.parse(raw)) : fallback;
     } catch {
       valueCache = fallback;
     }
@@ -80,12 +82,52 @@ function cachedSnapshot<T>(key: string, fallback: T) {
 
 const EMPTY_CART: CartItem[] = [];
 
-const cartSnapshot = cachedSnapshot<CartItem[]>(KEY, EMPTY_CART);
+/**
+ * localStorage の中身を商品マスタで洗い直す。
+ *
+ * 2つの理由でこれが要る。
+ *
+ * 1. **旧実装の残骸**。改修前の商品一覧は `id` が数値（1,2,3）だった。
+ *    その頃のカートがブラウザに残っている人がいる。IDの型が違うだけで
+ *    決済APIが落ちるので、ここで確実に落とす。
+ * 2. **金額の出どころを固定する**。localStorage は客が書き換えられる。
+ *    名前と価格は保存値を一切見ず、必ず商品マスタから引き直す。
+ *    数量だけを客の入力として受け取る。
+ */
+function normalizeCart(value: unknown): CartItem[] {
+  if (!Array.isArray(value)) return EMPTY_CART;
 
-/** クライアント用スナップショット。配列でなければ空扱い */
+  const items: CartItem[] = [];
+
+  for (const raw of value) {
+    if (!raw || typeof raw !== "object") continue;
+
+    const entry = raw as Record<string, unknown>;
+    const id = String(entry.id ?? "");
+    const product = findProduct(id);
+
+    // マスタに無い＝旧IDや削除済み商品。売れないので捨てる
+    if (!product) continue;
+
+    const quantity = Math.trunc(Number(entry.quantity));
+    if (!Number.isFinite(quantity) || quantity < 1) continue;
+
+    items.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: Math.min(quantity, 99),
+    });
+  }
+
+  return items;
+}
+
+const cartSnapshot = cachedSnapshot<CartItem[]>(KEY, EMPTY_CART, normalizeCart);
+
+/** クライアント用スナップショット。商品マスタで正規化済み */
 export function getCartSnapshot(): CartItem[] {
-  const value = cartSnapshot();
-  return Array.isArray(value) ? value : EMPTY_CART;
+  return cartSnapshot();
 }
 
 /** SSR/初回HTML用。localStorage が無いので必ず空 */
@@ -134,8 +176,7 @@ export function readCart(): CartItem[] {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
 
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as CartItem[]) : [];
+    return normalizeCart(JSON.parse(raw));
   } catch {
     return [];
   }
@@ -208,7 +249,8 @@ export function readLastOrder(): LastOrder | null {
 
 const lastOrderSnapshot = cachedSnapshot<LastOrder | null>(
   LAST_ORDER_KEY,
-  null
+  null,
+  (v) => (v && typeof v === "object" ? (v as LastOrder) : null)
 );
 
 /** クライアント用スナップショット */
