@@ -7,24 +7,24 @@ import {
   squareClient,
   toMoney,
 } from "@/lib/square";
+import { findProduct } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
-type IncomingItem = {
-  id?: string;
-  name?: string;
-  price?: number;
-  quantity?: number;
-};
+/** 1回の会計で受け付ける最大点数。無人店の棚に対して十分な上限 */
+const MAX_LINE_ITEMS = 20;
+const MAX_QUANTITY = 99;
 
 /**
- * POST /api/checkout   body: { amount, items? }
+ * POST /api/checkout   body: { items: [{ id, quantity }] }
  *
- * Square に Order を作り、orderId を返す。
+ * Square に Order を作り、orderId と**サーバーが計算した金額**を返す。
  * ここではまだ決済しない。決済は次の /api/terminal → ターミナル実機で行われる。
  *
- * items を受け取れるようにしてあるのは、Square 側の売上に品名を残すため。
- * 無人店では手元に伝票が残らないので、Order の明細が唯一の記録になる。
+ * 【重要】価格はクライアントから受け取らない。
+ * 受け取るのは「どの商品を何個」だけで、単価も合計も商品マスタから引き直す。
+ * localStorage も HTTP ボディも客が書き換えられるため、
+ * 送られてきた金額を信じると1円で決済できてしまう。
  */
 export async function POST(req: NextRequest) {
   const missing = missingEnv("SQUARE_ACCESS_TOKEN", "SQUARE_LOCATION_ID");
@@ -37,42 +37,74 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let body: { amount?: number; items?: IncomingItem[] };
-
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "リクエストが不正です。" }, { status: 400 });
-  }
+    let body: { items?: unknown };
 
-  const amount = Number(body.amount);
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: "リクエストが不正です。" },
+        { status: 400 }
+      );
+    }
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    return NextResponse.json(
-      { error: "金額が正しくありません。" },
-      { status: 400 }
-    );
-  }
+    if (!Array.isArray(body.items) || body.items.length === 0) {
+      return NextResponse.json(
+        { error: "カートが空です。" },
+        { status: 400 }
+      );
+    }
 
-  // 明細があればそのまま、無ければ合計1行だけの注文にする
-  const items = Array.isArray(body.items) ? body.items : [];
+    if (body.items.length > MAX_LINE_ITEMS) {
+      return NextResponse.json(
+        { error: "一度にお会計できる点数を超えています。" },
+        { status: 400 }
+      );
+    }
 
-  const lineItems = items.length
-    ? items.map((item) => ({
-        name: item.name?.slice(0, 512) || "商品",
-        quantity: String(Math.max(1, Math.trunc(Number(item.quantity) || 1))),
-        basePriceMoney: toMoney(Number(item.price) || 0),
-        ...(item.id ? { note: item.id.slice(0, 500) } : {}),
-      }))
-    : [
-        {
-          name: "お買い上げ",
-          quantity: "1",
-          basePriceMoney: toMoney(amount),
-        },
-      ];
+    // 商品マスタで引き直す。id は数値で来ても String() で受ける
+    // （改修前の商品一覧は id が数値だった。その頃のカートが残っている端末がある）
+    const lineItems = [];
+    let total = 0;
 
-  try {
+    for (const raw of body.items) {
+      if (!raw || typeof raw !== "object") continue;
+
+      const entry = raw as Record<string, unknown>;
+      const id = String(entry.id ?? "");
+      const product = findProduct(id);
+
+      if (!product) {
+        return NextResponse.json(
+          { error: "取り扱いのない商品が含まれています。カートを空にしてお試しください。" },
+          { status: 400 }
+        );
+      }
+
+      const quantity = Math.trunc(Number(entry.quantity));
+
+      if (!Number.isFinite(quantity) || quantity < 1 || quantity > MAX_QUANTITY) {
+        return NextResponse.json(
+          { error: "数量が正しくありません。" },
+          { status: 400 }
+        );
+      }
+
+      total += product.price * quantity;
+
+      lineItems.push({
+        name: product.name,
+        quantity: String(quantity),
+        basePriceMoney: toMoney(product.price),
+        note: product.id,
+      });
+    }
+
+    if (lineItems.length === 0) {
+      return NextResponse.json({ error: "カートが空です。" }, { status: 400 });
+    }
+
     const response = await squareClient.orders.create({
       idempotencyKey: randomUUID(),
       order: {
@@ -85,20 +117,20 @@ export async function POST(req: NextRequest) {
     const order = response.order;
 
     if (!order?.id) {
-      console.error("Checkout API: Order の作成に失敗（idが無い）", response);
+      console.error("Checkout API: Order の作成に失敗（idが無い）");
       return NextResponse.json(
         { error: "注文の作成に失敗しました。もう一度お試しください。" },
         { status: 502 }
       );
     }
 
-    const total = Number(order.totalMoney?.amount ?? 0);
+    const squareTotal = Number(order.totalMoney?.amount ?? 0);
 
-    // 明細から計算した合計と画面の金額がずれていたら止める。
-    // ここを通すと「表示と違う額が端末に出る」ことになり、無人店では取り返しがつかない。
-    if (items.length > 0 && total !== Math.round(amount)) {
+    // Square 側の計算（税設定など）と食い違ったら止める。
+    // 表示と違う額が端末に出るのは無人店では取り返しがつかない。
+    if (squareTotal !== total) {
       console.error(
-        `Checkout API: 金額不一致 画面=${amount} / Order=${total}。注文を破棄する`
+        `Checkout API: 金額不一致 マスタ=${total} / Order=${squareTotal}`
       );
       return NextResponse.json(
         { error: "金額の確認ができませんでした。もう一度お試しください。" },
@@ -108,7 +140,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       orderId: order.id,
-      amount: total || Math.round(amount),
+      amount: squareTotal,
       currency: CURRENCY,
     });
   } catch (error) {

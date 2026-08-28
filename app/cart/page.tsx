@@ -17,6 +17,22 @@ import { PAYMENT_CHOICES, type PaymentTypeKey } from "@/lib/payment-methods";
 import { ShopHeader, ShopFooter, NoCashAlert } from "@/components/Brand";
 
 /**
+ * サーバーが JSON を返せなかったときも落とさずに読む。
+ *
+ * APIが想定外に落ちると本文が空や HTML になる。そのまま res.json() すると
+ * 例外になり、原因と無関係な「通信エラー」を客に見せてしまう。
+ */
+async function readJson(res: Response): Promise<{ [k: string]: unknown; error?: string; orderId?: string; checkoutId?: string }> {
+  try {
+    return await res.json();
+  } catch {
+    return {
+      error: `サーバーから応答がありませんでした（${res.status}）。もう一度お試しください。`,
+    };
+  }
+}
+
+/**
  * ② ご注文の確認
  *
  * 改修前は /cart と /checkout に分かれていたが、アーティファクトでは1画面。
@@ -48,14 +64,16 @@ export default function CartPage() {
       setLoading(true);
       setError("");
 
-      // 明細も送る。無人店では手元に伝票が残らないので、
-      // Square の Order に品名が載っていないと後から何が売れたか追えない。
+      // 送るのは「どの鉢を何個」だけ。単価と合計はサーバーが商品マスタから引き直す。
+      // 金額を送ってしまうと、書き換えて1円で決済できてしまう。
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: total, items }),
+        body: JSON.stringify({
+          items: items.map((i) => ({ id: i.id, quantity: i.quantity })),
+        }),
       });
-      const data = await res.json();
+      const data = await readJson(res);
 
       if (!res.ok || !data.orderId) {
         setError(data.error ?? "注文の作成に失敗しました。もう一度お試しください。");
@@ -67,17 +85,17 @@ export default function CartPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           orderId: data.orderId,
-          amount: total,
           paymentType,
         }),
       });
-      const terminalData = await terminalRes.json();
+      const terminalData = await readJson(terminalRes);
 
       if (!terminalRes.ok) {
         setError(
           terminalRes.status === 503
             ? "レジの決済端末が準備中です。しばらくしてからお試しください。"
-            : "決済端末とうまく通信できませんでした。もう一度お試しください。"
+            : terminalData.error ??
+              "決済端末とうまく通信できませんでした。もう一度お試しください。"
         );
         return;
       }
