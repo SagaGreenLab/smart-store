@@ -1,75 +1,101 @@
+import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { randomUUID } from "crypto";
-import { SquareClient, SquareEnvironment } from "square";
+import { describeError, missingEnv, squareClient, toMoney } from "@/lib/square";
+import { ALLOWED_PAYMENT_TYPES, type PaymentTypeKey } from "@/lib/payment-methods";
 
-const client = new SquareClient({
-  token: process.env.SQUARE_ACCESS_TOKEN!,
-  environment:
-    process.env.SQUARE_ENVIRONMENT === "production"
-      ? SquareEnvironment.Production
-      : SquareEnvironment.Sandbox,
-});
+export const dynamic = "force-dynamic";
 
-// 有効な payment_type（"PAYPAY" は非推奨。QR_CODE が PayPay・d払い等をカバー）
-const ALLOWED_PAYMENT_TYPES = new Set([
-  "CARD_PRESENT",
-  "FELICA_ALL",
-  "FELICA_ID",
-  "FELICA_TRANSPORTATION_GROUP",
-  "FELICA_QUICPAY", // 2026-07-31 QUICPay有効化メール確認済み（佐賀駅）
-  "QR_CODE",
-]);
+/** deadlineDuration は既定・最大とも5分。/payment のポーリング上限と揃えている */
+const DEADLINE = "PT5M";
 
+/**
+ * POST /api/terminal   body: { orderId, amount, paymentType }
+ *
+ * レジ横の Square ターミナルに金額を表示させ、checkoutId を返す。
+ *
+ * 重要：このAPIが成功しても決済は**まだ終わっていない**（status は PENDING）。
+ * 実際の支払いは客が端末にカードをかざした時点で成立するため、
+ * 呼び出し側は /api/terminal/status を COMPLETED になるまでポーリングすること。
+ */
 export async function POST(req: NextRequest) {
-  const deviceId = process.env.SQUARE_DEVICE_ID;
+  const missing = missingEnv("SQUARE_ACCESS_TOKEN", "SQUARE_DEVICE_ID");
 
-  if (!deviceId) {
-    return Response.json(
-      {
-        success: false,
-        code: "DEVICE_ID_NOT_CONFIGURED",
-        message:
-          "Square Terminalは未設定です。実機到着後にSQUARE_DEVICE_IDを設定してください。",
-      },
+  if (missing.length > 0) {
+    console.error("Terminal API: 環境変数が未設定:", missing.join(", "));
+    // 画面側はこの 503 を「端末が準備中」と案内する
+    return NextResponse.json(
+      { error: "決済端末が準備中です。" },
       { status: 503 }
     );
   }
 
+  let body: { orderId?: string; amount?: number; paymentType?: string };
+
   try {
-    const { orderId, amount, paymentType } = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "リクエストが不正です。" }, { status: 400 });
+  }
 
-    // 許可された決済方法のみ受け付け（不正値はカードにフォールバック）
-    const resolvedPaymentType = ALLOWED_PAYMENT_TYPES.has(paymentType)
-      ? paymentType
-      : "CARD_PRESENT";
+  const { orderId } = body;
+  const amount = Number(body.amount);
+  const paymentType = body.paymentType;
 
-    const response = await client.terminal.checkouts.create({
+  if (!orderId) {
+    return NextResponse.json({ error: "orderId が必要です。" }, { status: 400 });
+  }
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return NextResponse.json(
+      { error: "金額が正しくありません。" },
+      { status: 400 }
+    );
+  }
+
+  // 不正値を CARD_PRESENT にフォールバックさせない。
+  // 客がQRを選んだのにカード用の画面が出ると、無人店では説明する人がいない。
+  if (!paymentType || !ALLOWED_PAYMENT_TYPES.has(paymentType)) {
+    return NextResponse.json(
+      { error: "お支払い方法が正しくありません。" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const response = await squareClient.terminal.checkouts.create({
       idempotencyKey: randomUUID(),
       checkout: {
+        amountMoney: toMoney(amount),
         orderId,
-        amountMoney: {
-          amount: BigInt(amount),
-          currency: "JPY",
-        },
-        paymentType: resolvedPaymentType,
+        referenceId: orderId,
         deviceOptions: {
-          deviceId,
+          deviceId: process.env.SQUARE_DEVICE_ID!,
         },
+        // 無人店なので、端末側の確認画面はできるだけ短くする
+        paymentType: paymentType as PaymentTypeKey,
+        deadlineDuration: DEADLINE,
       },
     });
+
+    const checkout = response.checkout;
+
+    if (!checkout?.id) {
+      console.error("Terminal API: checkout の作成に失敗（idが無い）", response);
+      return NextResponse.json(
+        { error: "決済端末の応答が取得できませんでした。" },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({
-      success: true,
-      status: response.checkout?.status ?? "PENDING",
-      checkoutId: response.checkout?.id,
+      checkoutId: checkout.id,
+      status: checkout.status ?? "PENDING",
     });
   } catch (error) {
-    console.error("Terminal API Error:", error);
+    console.error("Terminal API Error:", describeError(error));
 
     return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : String(error),
-      },
+      { error: "決済端末とうまく通信できませんでした。" },
       { status: 500 }
     );
   }

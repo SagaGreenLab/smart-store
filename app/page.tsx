@@ -1,80 +1,63 @@
-"use client";
-import { useRouter } from "next/navigation";
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-};
+import Link from "next/link";
+import { PRODUCTS } from "@/lib/products";
+import { ShopHeader, ShopFooter, NoCashAlert } from "@/components/Brand";
 
-const products: Product[] = [
-  { id: 1, name: "モンステラ", price: 1980 },
-  { id: 2, name: "サンスベリア", price: 2480 },
-  { id: 3, name: "ポトス", price: 980 },
-];
-
-export default function ProductsPage() {
-  const router = useRouter();
-  const addToCart = (product: Product) => {
-    const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
-
-    const existing = cart.find((item: any) => item.id === product.id);
-
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.push({
-        ...product,
-        quantity: 1,
-      });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-router.push("/cart");
-  };
-
+/**
+ * 商品一覧
+ *
+ * アーティファクトには無い画面。商品QRを読まずに来た人と、
+ * 棚から選び直したい人の受け皿として置いている。
+ */
+export default function HomePage() {
   return (
-    <main className="min-h-screen p-4">
-      <div className="mx-auto max-w-md">
-        <div className="mb-4 flex items-center justify-between px-1 pt-1">
-          <h1 className="text-xl font-extrabold text-[#1b2333]">商品一覧</h1>
+    <main className="dg-wrap">
+      <ShopHeader />
 
-          <span className="text-xs font-bold tracking-wider text-[#98a1b3]">
-            MINI GREEN SHOP
-          </span>
-        </div>
+      <h1 className="dg-h1">帰り道に、みどりを一鉢。</h1>
 
-        <div className="space-y-3">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="rounded-3xl bg-white p-5 shadow-[0_8px_28px_rgba(27,51,92,0.08)]"
-            >
-              <div className="flex items-baseline justify-between">
-                <h2 className="text-[15px] font-bold text-[#1b2333]">
-                  {product.name}
-                </h2>
+      <p className="dg-body dg-mt-2" style={{ fontSize: 12.5 }}>
+        棚の値札にあるQRコードを読み取ると、その鉢のページが開きます。
+        お支払いはレジ横の決済端末で。
+      </p>
 
-                <p className="flex items-baseline gap-0.5 text-[#1b2333]">
-                  <span className="text-sm font-bold">¥</span>
-                  <span className="text-2xl font-extrabold tabular-nums">
-                    {product.price.toLocaleString()}
-                  </span>
-                </p>
-              </div>
-
-              <p className="mt-0.5 text-right text-xs text-[#98a1b3]">税込</p>
-
-              <button
-                onClick={() => addToCart(product)}
-                className="mt-3 w-full rounded-2xl bg-[#4fa8f0] px-4 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#2f93e6] active:bg-[#2f93e6]"
-              >
-                カートに入れる
-              </button>
-            </div>
-          ))}
-        </div>
+      <div className="dg-mt-3">
+        <NoCashAlert />
       </div>
+
+      <p className="dg-eyebrow dg-mt-4">きょうの鉢</p>
+
+      <div className="dg-mt-1" style={{ borderTop: "1px solid var(--rule)" }}>
+        {PRODUCTS.map((p) => (
+          <Link
+            key={p.id}
+            href={`/products/${p.id}`}
+            className="dg-item"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <span className="thumb" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 120 120" fill="none" stroke="var(--moss-soft)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M39 94h42l-5 20H44z" />
+                <path d="M60 94V50" />
+                <path d="M60 72c-15-2-24-13-24-26 13 0 24 9 24 26z" />
+                <path d="M60 62c15-2 24-13 24-26-13 0-24 9-24 26z" />
+              </svg>
+            </span>
+
+            <span className="body">
+              <b>{p.name}</b>
+              <span className="spec">
+                {p.potSize} ／ 高さ {p.height}
+              </span>
+            </span>
+
+            <span className="dg-price sm">
+              <span className="n">¥{p.price.toLocaleString()}</span>
+            </span>
+          </Link>
+        ))}
+      </div>
+
+      <ShopFooter />
     </main>
   );
 }
