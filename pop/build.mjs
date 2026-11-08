@@ -19,7 +19,9 @@ const { chromium } = createRequire(import.meta.url)("playwright");
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
-const outDir = path.join(here, "out");
+// 色違いを試すとき: npm run pop -- --color "#2E6CB2" --out out_bright
+const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const outDir = path.join(here, arg("--out") || "out");
 const printDir = path.join(outDir, "print");
 const previewDir = path.join(outDir, "preview");
 const htmlDir = path.join(outDir, "html");
@@ -44,7 +46,7 @@ async function loadProducts() {
 
 /* ---------- QR ---------- */
 /* ---------- 色（config.json の color から濃淡を作る） ---------- */
-const INK = (config.color || "#255CBE").toUpperCase();
+const INK = (arg("--color") || config.color || "#3E668D").toUpperCase();
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 const toHex = (rgb) => "#" + rgb.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("").toUpperCase();
 /** t=1 で元の色、t<1 で白に寄せる、t>1 で黒に寄せる */
