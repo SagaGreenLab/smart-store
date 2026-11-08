@@ -1,21 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Shippori_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
+import { Lato, Zen_Kaku_Gothic_New } from "next/font/google";
 import "./globals.css";
 
-/** 見出し・金額用の明朝 */
-const shippori = Shippori_Mincho({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-shippori",
-});
-
-/** 本文用のゴシック */
+/**
+ * 和文：店内の印刷物（鉢ラベル・サイン）と同じ幾何学寄りのゴシック。
+ * 細いウェイトを広い字間で置くのがこのブランドの声なので 300 を含める。
+ */
 const zenKaku = Zen_Kaku_Gothic_New({
-  weight: ["400", "500", "700"],
+  weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-zenkaku",
+});
+
+/**
+ * 欧文・数字：印刷物の英文サブと価格に合わせたヒューマニストサンス。
+ * 価格は細く大きく組むので 300 が主役。
+ */
+const lato = Lato({
+  weight: ["300", "400", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-lato",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F6F1EA",
+  themeColor: "#E9E6E0",
   width: "device-width",
   initialScale: 1,
 };
@@ -35,7 +41,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ja" className={`${shippori.variable} ${zenKaku.variable} h-full`}>
+    <html lang="ja" className={`${zenKaku.variable} ${lato.variable} h-full`}>
       <body className="min-h-full">{children}</body>
     </html>
   );

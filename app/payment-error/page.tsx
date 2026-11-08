@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { ShopHeader, ShopFooter } from "@/components/Brand";
+import { ShopHeader, ShopFooter, Eyebrow } from "@/components/Brand";
 
 const LINE_URL = process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ?? "";
 
@@ -33,44 +33,46 @@ function ErrorInner() {
     <main className="dg-wrap">
       <ShopHeader />
 
-      <div className="dg-mt-4" style={{ display: "grid", placeItems: "center" }}>
-        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" stroke="var(--warn)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="36" cy="36" r="32" />
-          <path d="M36 21v18" />
-          <path d="M36 49h.01" />
-        </svg>
-      </div>
+      <section className="dg-card dg-mt-1" style={{ textAlign: "center", padding: "30px 18px 26px" }}>
+        <div className="dg-result" style={{ color: "var(--warn)" }}>
+          <svg width="64" height="64" viewBox="0 0 72 72" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="36" cy="36" r="32" />
+            <path d="M36 21v18" />
+            <path d="M36 49h.01" />
+          </svg>
+        </div>
 
-      <h1 className="dg-h1 dg-mt-3" style={{ textAlign: "center", fontSize: 24, lineHeight: 1.5, color: "var(--warn)" }}>
-        お支払いが
-        <br />
-        完了しませんでした
-      </h1>
+        <h1 className="dg-h1 dg-mt-3" style={{ color: "var(--warn)", lineHeight: 1.6 }}>
+          お支払いが
+          <br />
+          完了しませんでした
+        </h1>
+        <p className="dg-en center">Payment didn&rsquo;t go through</p>
 
-      <p className="dg-body center dg-mt-2" style={{ fontSize: 14 }}>
-        {lead && (
-          <>
-            {lead}
-            <br />
-          </>
-        )}
-        代金は請求されていません。
-        <br />
-        もう一度お試しください。
-      </p>
+        <p className="dg-body center dg-mt-3" style={{ fontSize: 13.5 }}>
+          {lead && (
+            <>
+              {lead}
+              <br />
+            </>
+          )}
+          代金は請求されていません。もう一度お試しください。
+        </p>
+      </section>
 
-      <div className="dg-causes-box dg-mt-4">
-        <p className="label">よくある原因</p>
-        <ul>
+      <section className="dg-card">
+        <Eyebrow ja="よくある原因" en="COMMON CAUSES" />
+        <ul className="dg-causes dg-mt-3">
           {CAUSES.map((cause) => (
             <li key={cause}>{cause}</li>
           ))}
         </ul>
-      </div>
+      </section>
 
-      <div className="dg-mt-4">
+      <div className="dg-mt-3">
         <Link href="/cart" className="dg-btn">
           もう一度お支払いする
+          <small>Try again</small>
         </Link>
       </div>
 
@@ -83,14 +85,13 @@ function ErrorInner() {
             className="dg-btn-outline"
           >
             LINEで相談する
+            <small>Ask us on LINE</small>
           </a>
         </div>
       )}
 
       <p className="dg-caption">
-        くり返し失敗するときは、別のカードやお支払い
-        <br />
-        方法をお試しください。
+        くり返し失敗するときは、別のカードやお支払い方法をお試しください。
       </p>
 
       <ShopFooter />
