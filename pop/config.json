@@ -1,6 +1,6 @@
 {
-  "color": "#3E668D",
+  "color": "#2E6CB2",
   "baseUrl": "",
   "lineUrl": "",
-  "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。 color は文字・ロゴ・QRの色（看板見本の写真を白地で補正して測った値）。"
+  "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。 color は文字・ロゴ・QRの色（看板サイズ確認図の青に合わせた明るいブルー。2026-11 決定）。"
 }

@@ -14,6 +14,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 import QRCode from "qrcode";
 import { createRequire } from "node:module";
+import { LABELS, LABEL_CSS, renderLabel, fit } from "./labels.mjs";
 // playwright はプロジェクト依存に入れていない（ローカルの npx playwright / グローバル導入を利用）
 const { chromium } = createRequire(import.meta.url)("playwright");
 
@@ -25,7 +26,7 @@ const outDir = path.join(here, arg("--out") || "out");
 const printDir = path.join(outDir, "print");
 const previewDir = path.join(outDir, "preview");
 const htmlDir = path.join(outDir, "html");
-for (const d of [printDir, previewDir, htmlDir]) fs.mkdirSync(d, { recursive: true });
+for (const d of [printDir, previewDir, htmlDir]) fs.mkdirSync(path.join(d, "labels"), { recursive: true });
 
 const config = JSON.parse(fs.readFileSync(path.join(here, "config.json"), "utf8"));
 const BASE_URL = (config.baseUrl || "").replace(/\/$/, "");
@@ -46,7 +47,7 @@ async function loadProducts() {
 
 /* ---------- QR ---------- */
 /* ---------- 色（config.json の color から濃淡を作る） ---------- */
-const INK = (arg("--color") || config.color || "#3E668D").toUpperCase();
+const INK = (arg("--color") || config.color || "#2E6CB2").toUpperCase();
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 const toHex = (rgb) => "#" + rgb.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("").toUpperCase();
 /** t=1 で元の色、t<1 で白に寄せる、t>1 で黒に寄せる */
@@ -408,6 +409,45 @@ async function main() {
     ["06_shelf-strips", pv("strips", STRIPS.map((s) => `<div class="card">${strip(s)}</div>`).join(""), 200)],
   );
 
+  /* ---------- 鉢ラベル 10パターン ---------- */
+  const helpers = { qrSvg, productUrl, sampleNote: () => sampleNote(!!BASE_URL), icon, yen, potShort };
+  const labelCss = css + LABEL_CSS;
+  const sample = products.find((p) => p.id === "monstera") || products[0];
+  const tiles = [];
+  for (const L of LABELS) {
+    const one = await Promise.all(products.map((p) => renderLabel(L, p, helpers)));
+    const f = fit(L.size);
+    const cells = Array.from({ length: f.cols * f.rows }, (_, i) =>
+      L.shape ? `<div class="cell" style="outline:none;background:none">${one[i % one.length]}</div>` : one[i % one.length],
+    );
+    const name = `labels/${L.id}_${L.size.join("x")}`;
+    const file = path.join(htmlDir, `${name}.html`);
+    fs.writeFileSync(file, doc(`${L.id} ${L.name}`, labelCss, sheets(cells, f)));
+    PRINT_JOBS.push({ name, file });
+    tiles.push(
+      `<figure class="tile"><div class="stage">${await renderLabel(L, sample, helpers)}</div>
+        <figcaption><b>${L.id.replace("L", "")}</b>${L.name}<span class="sz">${L.size[0]}×${L.size[1]}mm</span><span class="use">${L.use}</span></figcaption></figure>`,
+    );
+  }
+  const overview = (title, list) =>
+    doc(
+      title,
+      labelCss +
+        `body{background:#E9E6E0;padding:9mm;width:206mm;display:flex;flex-wrap:wrap;gap:9mm 7mm;align-items:flex-start}
+         .tile{display:flex;flex-direction:column;gap:3mm}
+         .stage{filter:drop-shadow(0 .6mm 1.6mm rgba(0,0,0,.14))}
+         .stage .cut path,.stage .cut circle{stroke:none}
+         figcaption{font-size:7.4pt;color:#3A3A3A;line-height:1.5;max-width:62mm}
+         figcaption b{font-family:var(--en);font-weight:600;color:var(--ink);margin-right:1.6mm;font-size:9pt}
+         figcaption .sz{display:inline-block;margin-left:1.6mm;color:#777;font-family:var(--en)}
+         figcaption .use{display:block;color:#666;font-size:6.6pt}`,
+      list.join(""),
+    );
+  PREVIEWS.push(
+    ["labels/labels_01-05", overview("labels A", tiles.slice(0, 5))],
+    ["labels/labels_06-10", overview("labels B", tiles.slice(5))],
+  );
+
   const browser = await chromium.launch();
   const page = await browser.newPage({ deviceScaleFactor: 2 });
   for (const { name, file } of PRINT_JOBS) {
@@ -416,7 +456,7 @@ async function main() {
     await page.pdf({ path: path.join(printDir, `${name}.pdf`), preferCSSPageSize: true, printBackground: true });
   }
   for (const [name, html] of PREVIEWS) {
-    const f = path.join(htmlDir, `_preview_${name}.html`);
+    const f = path.join(htmlDir, `_preview_${name.replace("/", "_")}.html`);
     fs.writeFileSync(f, html);
     await page.goto(pathToFileURL(f).href, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
