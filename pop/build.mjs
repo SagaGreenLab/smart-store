@@ -43,7 +43,13 @@ async function loadProducts() {
 }
 
 /* ---------- QR ---------- */
-const QR_COLOR = "#2B4E73"; // 看板のブルーより一段深く。読み取り安定のため
+/* ---------- 色（config.json の color から濃淡を作る） ---------- */
+const INK = (config.color || "#255CBE").toUpperCase();
+const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const toHex = (rgb) => "#" + rgb.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("").toUpperCase();
+/** t=1 で元の色、t<1 で白に寄せる、t>1 で黒に寄せる */
+const shade = (t) => toHex(hex(INK).map((v) => (t <= 1 ? 255 - (255 - v) * t : v * (2 - t))));
+const QR_COLOR = shade(1.18); // 本体色より少し深く。読み取り安定のため
 async function qrSvg(url) {
   return QRCode.toString(url, {
     type: "svg",
@@ -69,15 +75,16 @@ const icon = {
 
 /* ---------- 共通スタイル ---------- */
 const FONT_LINK = `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=block" rel="stylesheet">`;
-const asset = (n) => pathToFileURL(path.join(here, "assets", n)).href;
+// マスク画像は file:// だと読めないため data URI で埋め込む
+const asset = (n) => "data:image/png;base64," + fs.readFileSync(path.join(here, "assets", n)).toString("base64");
 
 const BASE_CSS = `
 :root{
-  --ink:#36608A;      /* 看板と同じブルー（実測） */
-  --ink-d:#2B4E73;    /* 価格・QR */
-  --ink-2:#56789A;    /* 本文 */
-  --ink-3:#8DA2B8;    /* ラベル・英字 */
-  --rule:#B9C8D7;     /* 罫線 */
+  --ink:${INK};       /* 本体色（config.json の color） */
+  --ink-d:${shade(1.08)}; /* 価格 */
+  --ink-2:${shade(0.86)}; /* 本文 */
+  --ink-3:${shade(0.58)}; /* ラベル・英字 */
+  --rule:${shade(0.32)};  /* 罫線 */
   --paper:#FFFFFF;
   --kraft:#F5F2EC;    /* 下地を感じる面（ごく薄く） */
   --jp:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
@@ -90,9 +97,11 @@ body{font-family:var(--jp);color:var(--ink);-webkit-print-color-adjust:exact;pri
 svg.i, .ic svg{fill:none;stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round}
 .qr svg{display:block;width:100%;height:100%}
 .sample{display:block;font-size:5pt;color:#C2410C;letter-spacing:.05em;text-align:center;margin-top:.6mm}
-.mark{display:block;background:url(${asset("mark_blue.png")}) center/contain no-repeat}
-.wordmark{display:block;background:url(${asset("wordmark_blue.png")}) center/contain no-repeat}
-.lockup{display:block;background:url(${asset("lockup_blue.png")}) center/contain no-repeat}
+/* ロゴは形だけ使い、色は --ink で塗る（色を変えてもロゴが追従する） */
+.mark,.wordmark,.lockup{display:block;background:var(--ink);-webkit-mask:var(--src) center/contain no-repeat;mask:var(--src) center/contain no-repeat}
+.mark{--src:url(${asset("mark_blue.png")})}
+.wordmark{--src:url(${asset("wordmark_blue.png")})}
+.lockup{--src:url(${asset("lockup_blue.png")})}
 .mark,.wordmark,.lockup,.qr,.ic{flex:none}
 .rule{border:0;border-top:.25mm solid var(--ink);opacity:.9}
 .hair{border:0;border-top:.15mm solid var(--rule)}
@@ -200,14 +209,14 @@ async function potTag(p) {
    3. お買いもののしかた A4（什器② 背板・会計台の上）
    ===================================================================== */
 const HOW_CSS = `
-.how{width:210mm;height:297mm;padding:20mm 22mm 16mm;display:flex;flex-direction:column;align-items:center;background:#fff}
-.how .lockup{width:72mm;height:48mm}
+.how{width:210mm;height:297mm;padding:17mm 22mm 14mm;display:flex;flex-direction:column;align-items:center;background:#fff}
+.how .lockup{width:64mm;height:43mm}
 .how .ttl{margin-top:7mm;text-align:center}
 .how .ttl h1{font-size:25pt;font-weight:500;letter-spacing:.16em}
 .how .ttl p{font-size:11pt;color:var(--ink-3);margin-top:1mm;letter-spacing:.08em}
 .how .rule{width:100%;margin:8mm 0 3mm}
 .how ol{list-style:none;width:100%}
-.how li{display:grid;grid-template-columns:12mm 30mm 1fr;align-items:center;column-gap:6mm;padding:6.4mm 0;border-bottom:.15mm solid var(--rule)}
+.how li{display:grid;grid-template-columns:12mm 30mm 1fr;align-items:center;column-gap:6mm;padding:5mm 0;border-bottom:.15mm solid var(--rule)}
 .how li:last-child{border-bottom:0}
 .how .no{font-family:var(--en);font-weight:300;font-size:30pt;line-height:1;text-align:center;color:var(--ink)}
 .how .ic svg{width:30mm;height:30mm;stroke-width:2.6}
@@ -293,7 +302,7 @@ const SMALL_CSS = `
 .line .eyebrow{font-size:5.6pt;letter-spacing:.14em;color:var(--ink-3)}
 .line h2{font-size:11pt;font-weight:500;letter-spacing:.06em;line-height:1.45;margin-top:1.2mm}
 .line p{font-size:6.2pt;color:var(--ink-2);line-height:1.7;margin-top:1.6mm}
-.line .wm{margin-top:auto;width:30mm;height:5.4mm;background-position:left center}
+.line .wm{margin-top:auto;width:30mm;height:5.4mm;-webkit-mask-position:left center;mask-position:left center}
 .line .r{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .line .qr{width:20mm;height:20mm}
 .line .ph{width:20mm;height:20mm;border:.2mm dashed var(--rule);display:flex;align-items:center;justify-content:center;text-align:center;font-size:5pt;color:var(--ink-3);line-height:1.5}
@@ -412,7 +421,7 @@ async function main() {
     await page.locator("body").screenshot({ path: path.join(previewDir, `${name}.png`) });
   }
   await browser.close();
-  console.log(`done → ${path.relative(root, outDir)}  (baseUrl: ${BASE_URL || "未設定・見本"})`);
+  console.log(`done → ${path.relative(root, outDir)}  (color: ${INK} / baseUrl: ${BASE_URL || "未設定・見本"})`);
 }
 
 main().catch((e) => {

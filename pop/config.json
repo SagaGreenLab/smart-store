@@ -1,5 +1,6 @@
 {
+  "color": "#255CBE",
   "baseUrl": "",
   "lineUrl": "",
-  "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。"
+  "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。 color は文字・ロゴ・QRの色（VC9495 ソフトブルーを写真から補正した値）。"
 }
