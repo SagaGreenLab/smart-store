@@ -25,7 +25,8 @@ REFS = [
     POP / "out/preview/labels/labels_01-05.png",
     POP / "assets/lockup_blue.png",
 ]
-MODELS = [m for m in [os.environ.get("IMAGE_MODEL"), "gpt-image-1.5", "gpt-image-1"] if m]
+MODELS = [m for m in [os.environ.get("IMAGE_MODEL"), "gpt-image-2", "gpt-image-1.5"] if m]
+QUALITY = os.environ.get("IMAGE_QUALITY", "high")
 
 EXTRA = (
     "Use the attached reference images only for the brand look: the exact blue #2E6CB2, "
@@ -49,7 +50,7 @@ def fname(p):
 
 def main():
     os.environ.setdefault("OPENAI_API_KEY", "proxy-injected")
-    client = OpenAI()
+    client = OpenAI(max_retries=0, timeout=600)
     common, pats = load_patterns()
     want = set(sys.argv[1:])
     OUT.mkdir(parents=True, exist_ok=True)
@@ -64,12 +65,21 @@ def main():
         for model in MODELS:
             try:
                 files = [open(r, "rb") for r in REFS]
-                res = client.images.edit(
+                # 高画質は時間がかかり、待つだけだと途中の中継で切られるので
+                # ストリーミングで途中経過を受け取りながら待つ
+                stream = client.images.edit(
                     model=model, image=files, prompt=prompt,
-                    size="1536x1024", quality="high", n=1,
+                    size="1536x1024", quality=QUALITY, n=1,
+                    stream=True, partial_images=2,
                 )
-                dst.write_bytes(base64.b64decode(res.data[0].b64_json))
-                print("ok  ", dst.name, f"({model})")
+                b64 = None
+                for ev in stream:
+                    if ev.type.endswith("completed"):
+                        b64 = ev.b64_json
+                if not b64:
+                    raise RuntimeError("no image in stream")
+                dst.write_bytes(base64.b64decode(b64))
+                print("ok  ", dst.name, f"({model})", flush=True)
                 break
             except Exception as e:  # モデル名が使えないときは次を試す
                 print("fail", p["id"], model, str(e)[:200])

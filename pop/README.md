@@ -76,3 +76,17 @@ Squareの規定で、**印刷物には画面用のロゴ画像を使えません
 
 クラフト色（04・10）は白い紙に色ごと印刷する想定。クラフト紙に刷るときは
 `labels.mjs` の `--paper:#EEE5D5` を白に変えると二重にならない。
+
+## 鉢ラベル案（画像生成）12パターン（`pop/codex/`）
+
+`pop/codex-label-prompts.md` のC01〜C12を OpenAI の画像モデル（gpt-image-2、Codex と同系統）で
+1案1枚ずつ作ったデザイン案。一覧は `pop/codex/00_一覧.png`。
+画像の日本語やQRはそのまま印刷に使わない（採用案は `labels.mjs` で組み直す）。
+
+```bash
+python3 pop/codex/generate.py          # まだ無い案だけ生成（C03 C08 のように指定すると作り直し）
+python3 pop/codex/contact_sheet.py     # 一覧画像を作り直す
+```
+
+APIキーはクラウド環境のネットワークシークレット（api.openai.com）から自動で付くので、
+コードやファイルにキーを書く必要はない。
