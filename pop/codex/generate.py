@@ -1,0 +1,82 @@
+"""鉢ラベル案を OpenAI gpt-image（Codex と同じ画像モデル）で生成する。
+
+pop/codex-label-prompts.md の「共通ルール」と表（C01〜C12）を読み、
+参照画像（既存ラベル一覧とロゴ）を添えて 1パターン1枚ずつ作る。
+
+  python3 pop/codex/generate.py            # まだ無い案だけ作る
+  python3 pop/codex/generate.py C03 C08    # 指定した案だけ作り直す
+
+APIキーは環境のネットワークシークレットからプロキシが差し込むので、
+OPENAI_API_KEY はダミー値で動く。
+"""
+
+import base64
+import os
+import re
+import sys
+from pathlib import Path
+
+from openai import OpenAI
+
+ROOT = Path(__file__).resolve().parents[2]
+POP = ROOT / "pop"
+OUT = POP / "codex"
+REFS = [
+    POP / "out/preview/labels/labels_01-05.png",
+    POP / "assets/lockup_blue.png",
+]
+MODELS = [m for m in [os.environ.get("IMAGE_MODEL"), "gpt-image-1.5", "gpt-image-1"] if m]
+
+EXTRA = (
+    "Use the attached reference images only for the brand look: the exact blue #2E6CB2, "
+    "the thin line-art cat-with-sunflower logo, the light MUJI-like typography and hairline rules. "
+    "Do NOT copy the reference layouts; make the new label format described above. "
+    "One label design per image, shown as a real product photo in a calm shop setting. "
+    "Japanese text and the QR code may be imperfect; shape, material and layout direction matter most."
+)
+
+
+def load_patterns():
+    md = (POP / "codex-label-prompts.md").read_text(encoding="utf-8")
+    common = re.search(r"## 共通ルール.*?```\n(.*?)```", md, re.S).group(1).strip()
+    rows = re.findall(r"^\| (C\d\d) \| (.+?) \| (.+?) \| `(.+?)` \|$", md, re.M)
+    return common, [dict(id=i, name=n.strip(), size=s.strip(), prompt=p) for i, n, s, p in rows]
+
+
+def fname(p):
+    return OUT / f"{p['id']}_{p['name']}.png"
+
+
+def main():
+    os.environ.setdefault("OPENAI_API_KEY", "proxy-injected")
+    client = OpenAI()
+    common, pats = load_patterns()
+    want = set(sys.argv[1:])
+    OUT.mkdir(parents=True, exist_ok=True)
+    for p in pats:
+        dst = fname(p)
+        if want and p["id"] not in want:
+            continue
+        if not want and dst.exists():
+            print("skip", dst.name)
+            continue
+        prompt = f"{common}\n\n{p['prompt']}\nIntended real size: {p['size']}.\n\n{EXTRA}"
+        for model in MODELS:
+            try:
+                files = [open(r, "rb") for r in REFS]
+                res = client.images.edit(
+                    model=model, image=files, prompt=prompt,
+                    size="1536x1024", quality="high", n=1,
+                )
+                dst.write_bytes(base64.b64decode(res.data[0].b64_json))
+                print("ok  ", dst.name, f"({model})")
+                break
+            except Exception as e:  # モデル名が使えないときは次を試す
+                print("fail", p["id"], model, str(e)[:200])
+            finally:
+                for f in files:
+                    f.close()
+
+
+if __name__ == "__main__":
+    main()
