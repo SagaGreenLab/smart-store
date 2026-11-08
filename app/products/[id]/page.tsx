@@ -1,13 +1,26 @@
 import { notFound } from "next/navigation";
 import { PRODUCTS, findProduct } from "@/lib/products";
-import { ShopHeader, ShopFooter } from "@/components/Brand";
+import {
+  ShopHeader,
+  ShopFooter,
+  Eyebrow,
+  SunIcon,
+  DropIcon,
+  PotIcon,
+  PlantIcon,
+} from "@/components/Brand";
 import AddToCartButton from "./AddToCartButton";
 
 export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ id: p.id }));
 }
 
-/** ① 商品ページ（商品QRの着地点） */
+/**
+ * ① 商品ページ（商品QRの着地点）
+ *
+ * 鉢に付いているラベルと同じ並びにする。棚で見たものがそのまま画面に出るほうが、
+ * 無人店では「これで合っている」と伝わる。
+ */
 export default async function ProductPage({
   params,
 }: {
@@ -22,65 +35,65 @@ export default async function ProductPage({
     <main className="dg-wrap">
       <ShopHeader backHref="/" />
 
-      <div className="dg-photo">
-        {product.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.image} alt={product.name} />
-        ) : (
-          <div className="placeholder">
-            <svg width="112" height="112" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M39 94h42l-5 20H44z" />
-              <path d="M60 94V50" />
-              <path d="M60 72c-15-2-24-13-24-26 13 0 24 9 24 26z" />
-              <path d="M60 62c15-2 24-13 24-26-13 0-24 9-24 26z" />
-              <path d="M60 88c-11-1-17-9-17-18 10 0 17 7 17 18z" />
-            </svg>
-            <span>商品写真</span>
+      <article className="dg-card flush">
+        <div className="dg-photo">
+          {product.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={product.image} alt={product.name} />
+          ) : (
+            <div className="placeholder">
+              <PlantIcon size={88} />
+              <span>商品写真</span>
+            </div>
+          )}
+        </div>
+
+        <div style={{ padding: "18px 18px 20px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+            <Eyebrow ja="観葉植物" en="FOLIAGE PLANT" />
+            <span className="dg-pill">{product.potSize.replace(/（.*）/, "")}鉢</span>
           </div>
-        )}
-      </div>
+
+          <h1 className="dg-h1 lg dg-mt-3">{product.name}</h1>
+          <p className="dg-sci">{product.latin}</p>
+
+          <hr className="dg-hr" />
+
+          <ul className="dg-specs">
+            <li>
+              <SunIcon className="ic" />
+              <span>{product.place}</span>
+            </li>
+            <li>
+              <DropIcon className="ic" />
+              <span>{product.water}</span>
+            </li>
+            <li>
+              <PotIcon className="ic" />
+              <span>
+                {product.potSize}・高さ {product.height}
+              </span>
+            </li>
+          </ul>
+
+          <p className="dg-price dg-mt-4">
+            <span className="n">¥{product.price.toLocaleString()}</span>
+            <span className="tax">税込</span>
+          </p>
+        </div>
+      </article>
+
+      <section className="dg-card dg-owner">
+        <Eyebrow ja="店主より" en="FROM THE GROWER" />
+        <p className="dg-mt-2">{product.story}</p>
+      </section>
 
       <div className="dg-mt-4">
-        <h1 className="dg-h1" style={{ fontSize: 26 }}>{product.name}</h1>
-        <p className="dg-latin">{product.latin}</p>
-
-        <p className="dg-price hero dg-mt-3">
-          <span className="n">¥{product.price.toLocaleString()}</span>
-          <span className="tax">税込</span>
-        </p>
-      </div>
-
-      <dl className="dg-dl dg-mt-3">
-        <div>
-          <dt>鉢サイズ</dt>
-          <dd>{product.potSize}</dd>
-        </div>
-        <div>
-          <dt>高さ</dt>
-          <dd>{product.height}</dd>
-        </div>
-        <div>
-          <dt>置き場所</dt>
-          <dd>{product.place}</dd>
-        </div>
-        <div>
-          <dt>水やり</dt>
-          <dd>{product.water}</dd>
-        </div>
-      </dl>
-
-      <div className="dg-owner dg-mt-3">
-        <p className="label">店主より</p>
-        <p>{product.story}</p>
-      </div>
-
-      <p className="dg-eyebrow dg-mt-2">この鉢の在庫 のこり{product.stock}点</p>
-
-      <div className="dg-mt-3">
         <AddToCartButton
           id={product.id}
           name={product.name}
           price={product.price}
+          stock={product.stock}
         />
       </div>
 

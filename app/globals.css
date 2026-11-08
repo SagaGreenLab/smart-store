@@ -2,315 +2,406 @@
 
 /* ==========================================================================
    だいいちえんげいセンター｜セルフ決済ナビサイト デザインシステム
-   出典：アーティファクト「決済サイト 画面デザイン」
-        （bbf85158-cc21-4513-a45e-16db1cb2a669）の Main / Cart / Paying / Done / Error
-        各 .dc.html から実測した確定値。
+
+   出典：店内の印刷物（鉢ラベル C01〜C12 ／ お買いもののしかた ／ お支払い方法 ／
+   棚差しカード ／ 卓上サイン）。色は入稿画像から実測した値をそのまま使う。
+
+   考え方
+   1. 一色で通す。青 #1E4B9C が線画・見出し・価格・アイコン・QR すべてを担う。
+      二色目は現金不可とエラーの橙だけ。
+   2. 細いウェイト＋広い字間が声。太らせない。
+   3. 枠ではなく罫線。影・グラデーション・大きな角丸は使わない（印刷物に無い）。
+   4. 和英併記を既定にする。駅の店なので日本語が読めない人が必ず来る。
    ========================================================================== */
 
 :root{
-  /* --- 地色・面 --- */
-  --paper:   #F4F1EA;  /* ページ地色 */
-  --surface: #FFFFFF;  /* カード面（決済ブランドのタイル等） */
-  --tone:    #EFEADF;  /* 一段沈めた面（店主より・明細box・LINE誘導・注意） */
-  --frame:   #EAE5DA;  /* 写真プレースホルダ・サムネイル背景 */
-
-  /* --- 文字 --- */
-  --ink:   #2A2925;  /* 主字 */
-  --ink-2: #55514A;  /* 本文 */
-  --ink-3: #6B665D;  /* 補足（数量・ラベル寄り） */
-  --ink-4: #8A857C;  /* ラベル・最弱・キャプション */
-  --ink-5: #9A9384;  /* プレースホルダ内文字・注記 */
-
-  /* --- アクセント（モス） --- */
-  --moss:    #6F7A62;  /* CTA・見出しアイコン */
-  --moss-d:  #545E48;  /* CTAホバー・アウトライン文字・「店主より」ラベル */
-  --moss-soft: #8C9A7C; /* サムネイル内アイコン・NFC波線 */
-  --moss-line: #A8AF9C; /* 罫線寄りのモス（причин箇条点・アウトライン枠） */
-
-  /* --- 注意（現金不可／エラー） --- */
-  --warn:     #8C5F4A;  /* アイコン・エラー見出し・強調文字 */
-  --warn-border: #C9BFAE;
-  --warn-bg:  #EFEADF;  /* = --tone */
-
-  /* --- 罫線 --- */
-  --rule:   #DFD9CD;  /* セクション罫線 */
-  --rule-2: #CFC8BA;  /* ボタン・タイル・ステッパー枠 */
-  --rule-3: #D6D0C4;  /* box内の細い仕切り線 */
-  --dash:   #B9B1A2;  /* 点線（QRプレースホルダ） */
+  /* --- 色（すべて入稿画像からの実測値） --- */
+  --ink:     #1E4B9C;  /* ブランドブルー。線画・見出し・価格・アイコン */
+  --ink-2:   #3F67B4;  /* 和文の本文 */
+  --sub:     #6F93D4;  /* 英文・学名・補助ラベル */
+  --rule:    #B9CBE8;  /* ヘアライン */
+  --rule-2:  #D7E1F2;  /* さらに薄い仕切り */
+  --canvas:  #E9E6E0;  /* 地色（温かいグレージュ） */
+  --surface: #FFFFFF;  /* カード面 */
+  --warn:    #CA5B2E;  /* 現金不可・エラーのみ */
+  --warn-bg: #FBF1EC;
 
   /* --- 書体（layout.tsx の next/font から流し込む） --- */
-  --font-mincho: var(--font-shippori), 'Hiragino Mincho ProN', serif;
-  --font-gothic: var(--font-zenkaku), 'Hiragino Sans', sans-serif;
+  --jp: var(--font-zenkaku), 'Hiragino Sans', sans-serif;
+  --en: var(--font-lato), var(--font-zenkaku), 'Hiragino Sans', sans-serif;
 }
 
 html,body{height:100%}
 
 body{
   margin:0;
-  background:var(--paper);
+  background:var(--canvas);
   color:var(--ink);
-  font-family:var(--font-gothic);
+  font-family:var(--jp);
+  font-weight:400;
   font-size:14px;
   line-height:1.9;
-  letter-spacing:.02em;
+  letter-spacing:.04em;
   -webkit-font-smoothing:antialiased;
 }
 
-/* iPhone 390px 幅を基準に設計。タップ対象は 46〜56px を確保する */
-.dg-wrap{max-width:390px;margin:0 auto;padding:0 20px 44px}
+*:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* iPhone 390px 幅が基準。タップ対象は 46〜56px を確保する */
+.dg-wrap{max-width:390px;margin:0 auto;padding:0 16px 40px}
 
 /* --------------------------------------------------------------------------
-   ヘッダー：マーク＋手書きロゴタイプ、右に掲出場所
+   カード：印刷物と同じく白い紙が地色に乗っているだけ。影は付けない
    -------------------------------------------------------------------------- */
-.dg-head{
-  display:flex;align-items:center;gap:12px;
-  height:52px;flex-shrink:0;border-bottom:1px solid var(--rule);
-  margin:0 -20px 20px;padding:0 20px;
-}
-.dg-head .back{
-  width:40px;height:40px;margin-left:-8px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;color:var(--ink-2);
-}
-.dg-head .brand{display:flex;align-items:center;gap:8px;flex-grow:1;min-width:0}
-.dg-head .mark{height:26px;width:auto;display:block;flex-shrink:0}
-.dg-head .wordmark{height:15px;width:auto;display:block}
-.dg-place{margin:0;font-size:11px;letter-spacing:.1em;color:var(--ink-4);white-space:nowrap}
+.dg-card{background:var(--surface);border-radius:2px;padding:20px 18px}
+.dg-card.flush{padding:0;overflow:hidden}
+.dg-card + .dg-card{margin-top:10px}
 
 /* --------------------------------------------------------------------------
-   見出し（明朝・すべて600）
+   ヘッダー：地色のまま。マーク＋手書きロゴタイプ、右に掲出場所
+   -------------------------------------------------------------------------- */
+.dg-head{display:flex;align-items:center;gap:10px;height:56px}
+.dg-head .back{
+  width:36px;height:36px;margin-left:-9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:var(--ink);
+}
+.dg-head .brand{display:flex;align-items:center;gap:7px;flex-grow:1;min-width:0}
+.dg-head .mark{height:26px;width:auto;display:block;flex-shrink:0}
+.dg-head .wordmark{height:14px;width:auto;display:block}
+.dg-place{
+  margin:0;font-size:10.5px;letter-spacing:.14em;color:var(--sub);white-space:nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   アイブロウ行：猫マーク＋和文＋英文。印刷物の全アイテムに共通する並び
+   -------------------------------------------------------------------------- */
+.dg-eyebrow{
+  display:flex;align-items:center;gap:9px;margin:0;
+  font-size:11.5px;letter-spacing:.16em;color:var(--sub);line-height:1;
+}
+.dg-eyebrow .cat{height:17px;width:auto;display:block;opacity:.9}
+.dg-eyebrow .en{font-family:var(--en);font-weight:400;letter-spacing:.1em}
+
+/* 鉢サイズなどの輪郭ピル */
+.dg-pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:4px 11px;border:1px solid var(--rule);border-radius:4px;
+  font-size:11.5px;letter-spacing:.08em;color:var(--ink-2);white-space:nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   見出し：細く、広く。直下に小さな英文を必ず置く
    -------------------------------------------------------------------------- */
 .dg-h1{
-  margin:0;font-family:var(--font-mincho);font-weight:600;
-  font-size:24px;line-height:1.5;letter-spacing:.06em;color:var(--ink);
+  margin:0;font-weight:500;font-size:23px;line-height:1.5;
+  letter-spacing:.2em;color:var(--ink);
 }
+.dg-h1.lg{font-size:26px;letter-spacing:.16em}
 .dg-h2{
-  margin:0;font-family:var(--font-mincho);font-weight:600;
-  font-size:15px;line-height:1.7;letter-spacing:.06em;color:var(--ink);
+  margin:0;font-weight:500;font-size:15px;line-height:1.7;
+  letter-spacing:.14em;color:var(--ink);
 }
-.dg-latin{
-  margin:5px 0 0;font-size:12px;letter-spacing:.1em;color:var(--ink-4);font-style:italic;
+.dg-en{
+  margin:5px 0 0;font-family:var(--en);font-weight:300;font-size:12px;
+  letter-spacing:.1em;color:var(--sub);line-height:1.5;
 }
-.dg-eyebrow{
-  margin:0;font-size:12.5px;letter-spacing:.16em;color:var(--ink-4);
+.dg-en.center{text-align:center}
+/* 学名はイタリック */
+.dg-sci{
+  margin:5px 0 0;font-family:var(--en);font-weight:300;font-style:italic;
+  font-size:13px;letter-spacing:.04em;color:var(--sub);
 }
 
+.dg-hr{height:1px;background:var(--rule);border:0;margin:16px 0}
+.dg-hr.tight{margin:12px 0}
+
 /* --------------------------------------------------------------------------
-   金額（明朝・weight600）
+   金額：細い欧文数字を大きく。印刷物の価格表記に合わせる
    -------------------------------------------------------------------------- */
 .dg-price{
-  display:flex;align-items:baseline;gap:7px;margin:0;
-  font-family:var(--font-mincho);font-weight:600;color:var(--ink);
+  display:flex;align-items:baseline;gap:8px;margin:0;color:var(--ink);
+  font-family:var(--en);
 }
-.dg-price .n{font-size:26px;letter-spacing:.02em;font-variant-numeric:tabular-nums}
-.dg-price .tax{font-family:var(--font-gothic);font-weight:400;font-size:12.5px;color:var(--ink-4)}
-.dg-price.hero .n{font-size:32px}
-.dg-price.xl .n{font-size:44px}
-.dg-price.lg .n{font-size:30px}
-.dg-price.sm{gap:0}
-.dg-price.sm .n{font-size:16px}
+.dg-price .n{
+  font-weight:300;font-size:34px;line-height:1.1;letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+}
+.dg-price .tax{
+  font-family:var(--jp);font-weight:400;font-size:11.5px;
+  letter-spacing:.1em;color:var(--sub);
+}
+.dg-price.xl .n{font-size:52px}
+.dg-price.lg .n{font-size:40px}
+.dg-price.sm .n{font-size:17px}
 .dg-price.center{justify-content:center}
-/* 明細・小計など明朝を使わない素の金額表示 */
-.dg-plain{font-family:var(--font-gothic);font-weight:400;font-size:14.5px;color:var(--ink)}
+.dg-num{font-family:var(--en);font-weight:400;font-variant-numeric:tabular-nums}
 
 /* --------------------------------------------------------------------------
-   罫線の定義リスト（スペック表）
+   スペック行：細線アイコン＋本文。表組みではなく行で並べる（鉢ラベルと同じ）
    -------------------------------------------------------------------------- */
-.dg-dl{margin:0;border-top:1px solid var(--rule)}
-.dg-dl > div{
-  display:flex;align-items:baseline;gap:12px;
-  padding:9px 0;border-bottom:1px solid var(--rule);
+.dg-specs{display:flex;flex-direction:column;gap:11px;margin:0;padding:0;list-style:none}
+.dg-specs li{display:flex;align-items:flex-start;gap:11px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.dg-specs .ic{flex:none;color:var(--ink);margin-top:1px}
+
+/* --------------------------------------------------------------------------
+   写真：カード最上部に全幅で置く
+   -------------------------------------------------------------------------- */
+.dg-photo{
+  width:100%;height:280px;background:#F4F2EE;
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid var(--rule-2);
 }
-.dg-dl dt{flex:none;width:84px;margin:0;font-size:12.5px;color:var(--ink-4);letter-spacing:.04em}
-.dg-dl dd{flex:1;margin:0;font-size:14.5px;color:var(--ink);text-align:left}
-.dg-dl dd.num{text-align:right;font-family:var(--font-mincho);font-weight:600;font-size:16px;color:var(--ink)}
+.dg-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.dg-photo .placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--rule)}
+.dg-photo .placeholder span{
+  font-size:10.5px;letter-spacing:.18em;color:var(--sub);
+}
 
 /* --------------------------------------------------------------------------
    商品行（ご注文の確認）
    -------------------------------------------------------------------------- */
-.dg-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.dg-item{display:flex;align-items:flex-start;gap:13px;padding:15px 0;border-top:1px solid var(--rule-2)}
+.dg-item:first-child{border-top:0}
 .dg-item .thumb{
-  width:56px;height:56px;flex:none;background:var(--frame);
-  display:grid;place-items:center;
+  width:52px;height:52px;flex:none;border:1px solid var(--rule-2);border-radius:2px;
+  display:grid;place-items:center;color:var(--rule);overflow:hidden;
 }
-.dg-item .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.dg-item .body b{font-family:var(--font-gothic);font-weight:700;font-size:15.5px;letter-spacing:.02em}
-.dg-item .spec{font-size:12.5px;color:var(--ink-4)}
-.dg-item .qty{font-size:12.5px;color:var(--ink-3)}
+.dg-item .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dg-item .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dg-item .body b{font-weight:500;font-size:15px;letter-spacing:.08em;color:var(--ink)}
+.dg-item .spec{font-size:11.5px;letter-spacing:.04em;color:var(--sub)}
+.dg-item .qty{font-size:11.5px;color:var(--ink-2);display:flex;align-items:center;gap:10px}
 .dg-item .qty button{
-  border:0;background:none;padding:0;margin-left:8px;cursor:pointer;
-  color:var(--ink-4);font-size:11px;text-decoration:underline;text-underline-offset:3px;
+  border:0;background:none;padding:0;cursor:pointer;color:var(--sub);
+  font-family:var(--jp);font-size:11px;text-decoration:underline;text-underline-offset:3px;
 }
+.dg-item .qty button:hover{color:var(--ink)}
 .dg-item .price{
-  font-family:var(--font-mincho);font-size:16px;font-weight:600;
-  white-space:nowrap;padding-top:2px;
+  font-family:var(--en);font-weight:300;font-size:19px;color:var(--ink);
+  white-space:nowrap;padding-top:1px;font-variant-numeric:tabular-nums;
 }
 
 /* --------------------------------------------------------------------------
-   写真プレースホルダ（① 商品ページ：高さ固定292px）
+   合計行
    -------------------------------------------------------------------------- */
-.dg-photo{
-  width:calc(100% + 40px);margin:0 -20px;height:292px;flex-shrink:0;
-  background:var(--frame);display:flex;align-items:center;justify-content:center;
-}
-.dg-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.dg-photo .placeholder{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--moss)}
-.dg-photo .placeholder span{font-size:11.5px;letter-spacing:.14em;color:var(--ink-5)}
+.dg-sum{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.dg-sum .k{font-size:12.5px;letter-spacing:.1em;color:var(--sub)}
+.dg-sum .v{font-family:var(--en);font-weight:400;font-size:15px;color:var(--ink-2)}
+.dg-total{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.dg-total .k{font-size:13px;letter-spacing:.14em;color:var(--ink)}
+.dg-total .k small{display:block;font-family:var(--en);font-weight:300;font-size:10.5px;letter-spacing:.08em;color:var(--sub)}
 
 /* --------------------------------------------------------------------------
-   ボタン（高さ56px・タップ間隔を確保）
+   ボタン：塗りは青一色。角丸は 2px だけ
    -------------------------------------------------------------------------- */
 .dg-btn{
-  display:flex;align-items:center;justify-content:center;
-  width:100%;min-height:56px;padding:16px;border:1px solid var(--moss);
-  background:var(--moss);color:var(--paper);cursor:pointer;
-  font-family:var(--font-gothic);font-size:17px;font-weight:700;letter-spacing:.06em;
-  text-decoration:none;border-radius:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  width:100%;min-height:58px;padding:12px 16px;border:1px solid var(--ink);
+  background:var(--ink);color:#fff;cursor:pointer;border-radius:2px;
+  font-family:var(--jp);font-size:16px;font-weight:500;letter-spacing:.14em;
+  text-decoration:none;
 }
-.dg-btn:hover{background:var(--moss-d);border-color:var(--moss-d)}
-.dg-btn:disabled{background:var(--tone);border-color:var(--rule);color:var(--ink-4);cursor:not-allowed}
+.dg-btn small{font-family:var(--en);font-weight:300;font-size:10.5px;letter-spacing:.1em;opacity:.78}
+.dg-btn:hover{background:#173C80;border-color:#173C80}
+.dg-btn:disabled{background:#AFC2E2;border-color:#AFC2E2;cursor:not-allowed}
 .dg-btn-outline{
-  display:flex;align-items:center;justify-content:center;
-  width:100%;min-height:52px;padding:14px;border:1px solid var(--moss-line);
-  background:transparent;color:var(--moss-d);cursor:pointer;
-  font-family:var(--font-gothic);font-size:15.5px;font-weight:700;letter-spacing:.04em;
-  text-decoration:none;border-radius:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  width:100%;min-height:52px;padding:11px 16px;border:1px solid var(--rule);
+  background:transparent;color:var(--ink);cursor:pointer;border-radius:2px;
+  font-family:var(--jp);font-size:14.5px;font-weight:500;letter-spacing:.1em;
+  text-decoration:none;
 }
-.dg-btn-outline:hover{background:rgba(86,96,71,.06)}
+.dg-btn-outline small{font-family:var(--en);font-weight:300;font-size:10px;letter-spacing:.08em;color:var(--sub)}
+.dg-btn-outline:hover{border-color:var(--ink);background:rgba(30,75,156,.04)}
 .dg-btn-text{
   display:block;width:100%;padding:14px 0 0;border:0;background:none;cursor:pointer;
-  font-family:var(--font-gothic);font-size:13.5px;color:var(--ink-4);
-  text-align:center;text-decoration:none;letter-spacing:.04em;
+  font-family:var(--jp);font-size:13px;color:var(--sub);
+  text-align:center;text-decoration:none;letter-spacing:.1em;
 }
-.dg-caption{margin:14px 0 0;font-size:12.5px;line-height:1.7;color:var(--ink-4);text-align:center}
+.dg-btn-text:hover{color:var(--ink)}
+.dg-caption{margin:12px 0 0;font-size:11.5px;line-height:1.8;color:var(--sub);text-align:center}
 
 /* --------------------------------------------------------------------------
-   注意（現金不可・警告共通）
+   現金不可・エラー：唯一の二色目
    -------------------------------------------------------------------------- */
 .dg-alert{
-  display:flex;gap:9px;padding:11px 13px;
-  border:1px solid var(--warn-border);background:var(--warn-bg);
+  display:flex;gap:10px;padding:13px 14px;border-radius:2px;
+  background:var(--warn-bg);border:1px solid #EBD3C6;
 }
-.dg-alert .icon{flex:none;color:var(--warn);line-height:1;margin-top:1px}
-.dg-alert p{margin:0;font-size:12.5px;line-height:1.65;color:var(--ink-2)}
+.dg-alert .icon{flex:none;color:var(--warn);margin-top:2px}
+.dg-alert p{margin:0;font-size:12px;line-height:1.75;color:#7A4630}
 .dg-alert b{color:var(--warn);font-weight:700}
-/* 小さい注記（枠なし） */
-.dg-note{
-  display:flex;gap:7px;margin:12px 0 0;
-  font-size:11px;line-height:1.85;color:var(--ink-4);
+.dg-alert .en{
+  display:block;margin-top:3px;font-family:var(--en);font-weight:300;
+  font-size:10.5px;letter-spacing:.06em;color:#A8755A;
 }
-.dg-note .icon{flex:none;color:var(--warn)}
 
 /* --------------------------------------------------------------------------
-   店主より（① 商品ページ）
+   店主より
    -------------------------------------------------------------------------- */
-.dg-owner{background:var(--tone);padding:14px 15px;display:flex;flex-direction:column;gap:6px}
-.dg-owner .label{font-family:var(--font-mincho);font-size:14px;font-weight:600;letter-spacing:.06em;color:var(--moss-d)}
-.dg-owner p{margin:0;font-size:13.5px;line-height:1.8;color:var(--ink-2)}
+/* 詳細度に注意：.dg-mt-* より .dg-owner p のほうが強いので、ここで余白を持たせる */
+.dg-owner p{margin:13px 0 0;font-size:13.5px;line-height:1.95;color:var(--ink-2)}
 
 /* --------------------------------------------------------------------------
    数量ステッパー
    -------------------------------------------------------------------------- */
 .dg-qty{display:flex;align-items:center;justify-content:space-between}
-.dg-qty .label{font-size:14.5px;font-weight:700;letter-spacing:.04em;color:var(--ink)}
-.dg-qty .ctrl{display:flex;align-items:center;border:1px solid var(--rule-2);background:var(--surface)}
+.dg-qty .label{font-size:13px;letter-spacing:.14em;color:var(--ink)}
+.dg-qty .label small{display:block;font-family:var(--en);font-weight:300;font-size:10px;letter-spacing:.08em;color:var(--sub)}
+.dg-qty .ctrl{display:flex;align-items:center;border:1px solid var(--rule);border-radius:2px}
 .dg-qty button{
   width:46px;height:46px;border:0;background:none;cursor:pointer;
-  display:grid;place-items:center;color:var(--ink-2);
+  display:grid;place-items:center;color:var(--ink);
 }
-.dg-qty button:first-child{color:var(--ink-4)}
+.dg-qty button:disabled{color:var(--rule);cursor:not-allowed}
 .dg-qty .num{
   width:46px;height:46px;display:grid;place-items:center;
-  font-family:var(--font-gothic);font-weight:700;font-size:17px;color:var(--ink);
+  font-family:var(--en);font-weight:400;font-size:17px;color:var(--ink);
   border-left:1px solid var(--rule);border-right:1px solid var(--rule);
 }
 
 /* --------------------------------------------------------------------------
-   決済手段の選択（ターミナルAPIが paymentType を要求するため必要）
+   決済区分の選択
    -------------------------------------------------------------------------- */
-.dg-choice{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.dg-choice{display:flex;flex-direction:column;gap:7px;margin-top:11px}
 .dg-choice button{
-  min-height:52px;padding:10px 8px;cursor:pointer;
-  border:1px solid var(--rule-2);background:var(--surface);
-  font-family:var(--font-gothic);font-size:12px;line-height:1.5;color:var(--ink-2);
+  display:flex;align-items:center;gap:11px;
+  min-height:52px;padding:10px 14px;cursor:pointer;border-radius:2px;
+  border:1px solid var(--rule);background:var(--surface);
+  font-family:var(--jp);font-size:13.5px;letter-spacing:.08em;color:var(--ink-2);
+  text-align:left;
 }
-.dg-choice button.on{border-color:var(--moss);background:rgba(111,122,98,.09);color:var(--ink)}
+.dg-choice button .dot{
+  width:15px;height:15px;flex:none;border-radius:50%;
+  border:1px solid var(--rule);display:grid;place-items:center;
+}
+.dg-choice button.on{border-color:var(--ink);color:var(--ink)}
+.dg-choice button.on .dot{border-color:var(--ink)}
+.dg-choice button.on .dot::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink)}
+.dg-choice button small{display:block;font-family:var(--en);font-weight:300;font-size:10px;letter-spacing:.06em;color:var(--sub)}
 
 /* --------------------------------------------------------------------------
-   決済ブランドのタイル（実ロゴ画像 66×32）
+   決済ブランドのタイル
    -------------------------------------------------------------------------- */
-.dg-brand-row{display:flex;align-items:center;gap:10px;margin:0 0 10px}
-.dg-brand-row .line{height:1px;background:var(--rule);flex-grow:1}
-.dg-brands{display:flex;flex-wrap:wrap;gap:4px}
+.dg-brands{display:flex;flex-wrap:wrap;gap:5px}
 .dg-brand{
   display:flex;align-items:center;justify-content:center;
-  width:66px;height:32px;flex-shrink:0;box-sizing:border-box;
-  border:1px solid var(--rule-2);background:var(--surface);
-  font-size:11.5px;font-weight:700;color:var(--ink);white-space:nowrap;
+  width:65px;height:32px;flex-shrink:0;box-sizing:border-box;
+  border:1px solid var(--rule-2);border-radius:2px;background:var(--surface);
+  font-family:var(--en);font-size:11px;font-weight:400;color:var(--ink-2);white-space:nowrap;
 }
-.dg-brand img{max-width:50px;max-height:20px;display:block}
+.dg-brand img{max-width:48px;max-height:19px;display:block}
 
 /* --------------------------------------------------------------------------
-   決済中：読み取り待ちのドット（左から濃→薄のグラデーション）
+   決済中：読み取り待ち
    -------------------------------------------------------------------------- */
-.dg-waiting{display:flex;align-items:center;justify-content:center;gap:7px;margin:14px 0 0}
-.dg-waiting i{width:7px;height:7px;border-radius:4px;display:inline-block}
-.dg-waiting i:nth-child(1){background:var(--moss)}
-.dg-waiting i:nth-child(2){background:#B4BBA8}
-.dg-waiting i:nth-child(3){background:var(--rule-3)}
-.dg-waiting span{font-size:12.5px;color:var(--ink-4);letter-spacing:.08em;margin-left:5px}
+.dg-waiting{display:flex;align-items:center;justify-content:center;gap:7px;margin:16px 0 0}
+.dg-waiting i{width:6px;height:6px;border-radius:50%;background:var(--ink);display:inline-block;animation:dg-pulse 1.4s ease-in-out infinite}
+.dg-waiting i:nth-child(2){animation-delay:.18s}
+.dg-waiting i:nth-child(3){animation-delay:.36s}
+.dg-waiting span{font-size:12px;color:var(--sub);letter-spacing:.12em;margin-left:6px}
+@keyframes dg-pulse{0%,100%{opacity:.22}50%{opacity:1}}
+@media (prefers-reduced-motion: reduce){
+  .dg-waiting i{animation:none}
+  .dg-waiting i:nth-child(1){opacity:1}
+  .dg-waiting i:nth-child(2){opacity:.6}
+  .dg-waiting i:nth-child(3){opacity:.3}
+}
 
 /* --------------------------------------------------------------------------
-   結果画面のアイコン（塗りなし太めの円・完了／エラーで共通サイズ違い）
+   明細box（お支払い完了）
    -------------------------------------------------------------------------- */
-.dg-result-icon{display:block;margin:0 auto}
+.dg-box{display:flex;flex-direction:column;gap:12px}
+.dg-box .row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+/* 品名が長いと左のラベルが折り返すので、縦に積む版を用意する */
+.dg-box .row.stack{flex-direction:column;align-items:flex-start;gap:5px}
+.dg-box .row.stack .v{text-align:left}
+.dg-box .k{margin:0;flex:none;white-space:nowrap;font-size:12px;letter-spacing:.1em;color:var(--sub)}
+.dg-box .v{margin:0;font-size:13.5px;color:var(--ink);text-align:right}
+.dg-box .v.num{font-family:var(--en);font-weight:300;font-size:24px}
+.dg-box .v.code{font-family:var(--en);font-weight:400;letter-spacing:.08em}
 
 /* --------------------------------------------------------------------------
-   注文情報box（④お支払い完了）
+   LINE誘導
    -------------------------------------------------------------------------- */
-.dg-box{border:1px solid var(--rule-3);background:var(--tone);padding:16px 18px;display:flex;flex-direction:column;gap:11px}
-.dg-box .row{display:flex;align-items:baseline;justify-content:space-between}
-.dg-box .row dt,.dg-box .row .k{margin:0;font-size:13px;color:var(--ink-3)}
-.dg-box .row dd,.dg-box .row .v{margin:0;font-size:13.5px;color:var(--ink)}
-.dg-box .row .v.num{font-family:var(--font-mincho);font-weight:600;font-size:20px}
-.dg-box .div{height:1px;background:var(--rule-3)}
-
-/* --------------------------------------------------------------------------
-   LINE誘導カード
-   -------------------------------------------------------------------------- */
-.dg-line{display:flex;align-items:center;gap:16px}
+.dg-line{display:flex;align-items:center;gap:15px}
 .dg-line .qr{
-  width:78px;height:78px;flex:none;border:1px dashed var(--dash);background:#FBFAF6;
-  display:grid;place-items:center;text-align:center;font-size:10.5px;line-height:1.5;color:var(--ink-5);
+  width:76px;height:76px;flex:none;border:1px dashed var(--rule);border-radius:2px;
+  display:grid;place-items:center;text-align:center;
+  font-size:9.5px;line-height:1.5;letter-spacing:.04em;color:var(--sub);
 }
-.dg-line .body{display:flex;flex-direction:column;gap:5px}
-.dg-line .body b{font-family:var(--font-mincho);font-weight:600;font-size:15.5px;letter-spacing:.05em}
-.dg-line .body p{margin:0;font-size:12.5px;line-height:1.7;color:var(--ink-2)}
+.dg-line .body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.dg-line .body b{font-weight:500;font-size:14.5px;letter-spacing:.1em;color:var(--ink)}
+.dg-line .body p{margin:0;font-size:12px;line-height:1.75;color:var(--ink-2)}
 
 /* --------------------------------------------------------------------------
-   よくある原因（エラー画面：塗りbox）
+   よくある原因（エラー画面）
    -------------------------------------------------------------------------- */
-.dg-causes-box{background:var(--tone);padding:15px 17px;display:flex;flex-direction:column;gap:9px}
-.dg-causes-box .label{margin:0;font-size:13px;font-weight:700;letter-spacing:.05em;color:var(--moss-d)}
-.dg-causes-box ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
-.dg-causes-box li{display:flex;gap:9px;font-size:13px;line-height:1.7;color:var(--ink-2)}
-.dg-causes-box li::before{content:'・';color:var(--moss-line);flex-shrink:0}
+.dg-causes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.dg-causes li{display:flex;gap:10px;font-size:12.5px;line-height:1.75;color:var(--ink-2)}
+.dg-causes li::before{content:"";flex:none;width:4px;height:4px;border-radius:50%;background:var(--rule);margin-top:9px}
 
 /* --------------------------------------------------------------------------
-   余白ユーティリティ
+   買い方の手順（ホーム）：本当に順番があるので番号を振る
    -------------------------------------------------------------------------- */
-.dg-mt-1{margin-top:8px}
-.dg-mt-2{margin-top:14px}
-.dg-mt-3{margin-top:20px}
-.dg-mt-4{margin-top:26px}
-.dg-mt-5{margin-top:44px}
+.dg-steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.dg-steps li{display:flex;gap:11px;padding:14px 0;border-top:1px solid var(--rule-2)}
+.dg-steps li:first-child{border-top:0;padding-top:0}
+.dg-steps .n{
+  flex:none;width:15px;font-family:var(--en);font-weight:300;font-size:16px;
+  line-height:1.4;color:var(--sub);text-align:center;
+}
+.dg-steps .ic{flex:none;color:var(--ink);margin-top:1px}
+.dg-steps .tx{min-width:0}
+.dg-steps .tx b{display:block;font-weight:500;font-size:13.5px;letter-spacing:.04em;color:var(--ink);line-height:1.65}
+.dg-steps .tx span{display:block;margin-top:3px;font-size:11.5px;line-height:1.7;color:var(--ink-2)}
+.dg-steps .tx em{
+  display:block;margin-top:2px;font-family:var(--en);font-weight:300;font-style:normal;
+  font-size:10.5px;letter-spacing:.06em;color:var(--sub);
+}
 
-.dg-body{margin:0;font-size:13.5px;line-height:1.85;color:var(--ink-2)}
+/* --------------------------------------------------------------------------
+   商品一覧の行
+   -------------------------------------------------------------------------- */
+.dg-list{display:flex;flex-direction:column}
+.dg-row{
+  display:flex;align-items:center;gap:13px;padding:14px 0;
+  border-top:1px solid var(--rule-2);text-decoration:none;color:inherit;
+}
+.dg-row:first-child{border-top:0;padding-top:0}
+.dg-row .thumb{
+  width:54px;height:54px;flex:none;border:1px solid var(--rule-2);border-radius:2px;
+  display:grid;place-items:center;color:var(--rule);overflow:hidden;
+}
+.dg-row .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dg-row .body{flex:1;min-width:0}
+.dg-row .body b{display:block;font-weight:500;font-size:14.5px;letter-spacing:.1em;color:var(--ink)}
+.dg-row .body span{display:block;margin-top:2px;font-size:11px;letter-spacing:.04em;color:var(--sub)}
+.dg-row .price{font-family:var(--en);font-weight:300;font-size:18px;color:var(--ink);white-space:nowrap}
+
+/* --------------------------------------------------------------------------
+   結果アイコン
+   -------------------------------------------------------------------------- */
+.dg-result{display:grid;place-items:center;margin:4px 0 0}
+
+/* --------------------------------------------------------------------------
+   本文・余白
+   -------------------------------------------------------------------------- */
+.dg-body{margin:0;font-size:13.5px;line-height:1.95;color:var(--ink-2)}
 .dg-body.center{text-align:center}
-.dg-hr{height:1px;background:var(--rule);border:0;margin:18px 0}
+.dg-note{margin:10px 0 0;font-size:10.5px;line-height:1.8;color:var(--sub)}
+
+.dg-mt-1{margin-top:8px}
+.dg-mt-2{margin-top:12px}
+.dg-mt-3{margin-top:18px}
+.dg-mt-4{margin-top:26px}
+.dg-mt-5{margin-top:38px}
 
 /* --------------------------------------------------------------------------
    フッター
    -------------------------------------------------------------------------- */
-.dg-foot{margin-top:44px;padding-top:20px;border-top:1px solid var(--rule);text-align:center}
-.dg-foot .tagline{width:186px;height:auto;margin:0 auto;display:block;opacity:.7}
-.dg-foot p{margin:10px 0 0;font-size:9.5px;letter-spacing:.1em;color:var(--ink-4);line-height:2}
+.dg-foot{margin-top:34px;text-align:center}
+.dg-foot .tagline{width:200px;height:auto;margin:0 auto;display:block;opacity:.75}
+.dg-foot p{
+  margin:12px 0 0;font-size:10px;letter-spacing:.1em;color:var(--sub);line-height:2;
+}
