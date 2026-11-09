@@ -435,19 +435,21 @@ async function main() {
   for (const L of LABELS) {
     const one = await Promise.all(products.map((p) => renderLabel(L, p, helpers)));
     const f = L.grid ? { w: L.size[0], h: L.size[1], crop: true, ...L.grid } : fit(L.size);
-    // L11 は config.json の l11Sheet（商品ID: 枚数）があれば、その順と枚数で面付けする
-    const plan = L.id === "L11" && config.l11Sheet && Object.keys(config.l11Sheet).length ? config.l11Sheet : null;
-    if (plan) for (const id of Object.keys(plan)) if (!products.some((p) => p.id === id)) throw new Error(`l11Sheet: 商品ID "${id}" が lib/products.ts にない`);
-    const picked = plan
-      ? Object.entries(plan).flatMap(([id, n]) => Array(n).fill(one[products.findIndex((p) => p.id === id)]))
-      : Array.from({ length: f.cols * f.rows }, (_, i) => one[i % one.length]);
-    const cells = picked.map((c) =>
-      L.shape || L.noCut ? `<div class="cell" style="outline:none;background:none">${c}</div>` : c,
-    );
-    const name = `labels/${L.id}_${L.size.join("x")}`;
-    const file = path.join(htmlDir, `${name}.html`);
-    fs.writeFileSync(file, doc(`${L.id} ${L.name}`, labelCss, sheets(cells, f)));
-    PRINT_JOBS.push({ name, file });
+    // L11 は config.json の l11Sheets（シート名: { 商品ID: 枚数 }）があれば、シートごとにその順と枚数で面付けする
+    const plans = L.id === "L11" && config.l11Sheets && Object.keys(config.l11Sheets).length ? Object.entries(config.l11Sheets) : [["", null]];
+    for (const [sheetName, plan] of plans) {
+      if (plan) for (const id of Object.keys(plan)) if (!products.some((p) => p.id === id)) throw new Error(`l11Sheets.${sheetName}: 商品ID "${id}" が lib/products.ts にない`);
+      const picked = plan
+        ? Object.entries(plan).flatMap(([id, n]) => Array(n).fill(one[products.findIndex((p) => p.id === id)]))
+        : Array.from({ length: f.cols * f.rows }, (_, i) => one[i % one.length]);
+      const cells = picked.map((c) =>
+        L.shape || L.noCut ? `<div class="cell" style="outline:none;background:none">${c}</div>` : c,
+      );
+      const name = `labels/${L.id}_${L.size.join("x")}${sheetName ? `_${sheetName}` : ""}`;
+      const file = path.join(htmlDir, `${name}.html`);
+      fs.writeFileSync(file, doc(`${L.id} ${L.name} ${sheetName}`, labelCss, sheets(cells, f)));
+      PRINT_JOBS.push({ name, file });
+    }
     tiles.push(
       `<figure class="tile"><div class="stage">${await renderLabel(L, sample, helpers)}</div>
         <figcaption><b>${L.id.replace("L", "")}</b>${L.name}<span class="sz">${L.size[0]}×${L.size[1]}mm${L.grid ? `・A4に${L.grid.cols * L.grid.rows}枚` : ""}</span><span class="use">${L.use}</span></figcaption></figure>`,

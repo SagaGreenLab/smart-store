@@ -24,6 +24,139 @@ export type Product = {
 };
 
 export const PRODUCTS: Product[] = [
+  /* ---------- 2026-11 佐賀駅 追加入荷 ----------
+   * 価格：Sサイズ 980円／Mサイズ 1,180円／アスプレニウム 2,480円／トキワシノブ 1,980円
+   * 高さは未計測のため「—」。stock は入荷数。 */
+  {
+    id: "asplenium",
+    name: "アスプレニウム エメラルドウェーブ",
+    latin: "Asplenium nidus 'Emerald Wave'",
+    price: 2480,
+    potSize: "鉢植え",
+    height: "—",
+    place: "明るい日陰（強い日差しは苦手）",
+    water: "土の表面が乾いたら たっぷり。ときどき葉水を",
+    story:
+      "波打つ葉がきれいなシダの仲間。葉に霧吹きをしてあげると、つやつやの緑が長もちします。",
+    stock: 2,
+  },
+  {
+    id: "tokiwashinobu",
+    name: "トキワシノブ",
+    latin: "Humata tyermannii",
+    price: 1980,
+    potSize: "鉢植え",
+    height: "—",
+    place: "明るい日陰・室内向き",
+    water: "土の表面が乾いたら たっぷり。葉水も好き",
+    story:
+      "鉢のふちからのぞく、白くふさふさした根茎が魅力のシダ。湿り気のある空気が好きです。",
+    stock: 2,
+  },
+  {
+    id: "gajumaru-s",
+    name: "ガジュマル",
+    latin: "Ficus microcarpa",
+    price: 980,
+    potSize: "Sサイズ（当店で植え込み）",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり。冬は控えめに",
+    story:
+      "ぷっくりした根がかわいい、沖縄では「精霊が宿る木」と呼ばれる縁起もの。丈夫で育てやすい一鉢です。",
+    stock: 10,
+  },
+  {
+    id: "pachira-s",
+    name: "パキラ",
+    latin: "Pachira glabra",
+    price: 980,
+    potSize: "Sサイズ（当店で植え込み）",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり。冬は控えめに",
+    story:
+      "手のひらのような葉を広げる定番の観葉植物。伸びたら切り戻して、好みの形に育てられます。",
+    stock: 6,
+  },
+  {
+    id: "peperomia-s",
+    name: "ペペロミア",
+    latin: "Peperomia",
+    price: 980,
+    potSize: "Sサイズ（当店で植え込み）",
+    height: "—",
+    place: "明るい日陰・室内向き",
+    water: "土がしっかり乾いてから",
+    story:
+      "肉厚の葉に水をためこむタイプ。乾かし気味に育てるのが長もちのコツです。",
+    stock: 4,
+  },
+  {
+    id: "gajumaru-m",
+    name: "ガジュマル",
+    latin: "Ficus microcarpa",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり。冬は控えめに",
+    story:
+      "ぷっくりした根がかわいい、沖縄では「精霊が宿る木」と呼ばれる縁起もの。丈夫で育てやすい一鉢です。",
+    stock: 4,
+  },
+  {
+    id: "sansevieria-m",
+    name: "サンスベリア",
+    latin: "Sansevieria trifasciata",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい場所・日陰でも可",
+    water: "乾かし気味に。冬は月1回ほど",
+    story:
+      "水やりを忘れても平気なくらい丈夫です。すっと立つ葉が、置くだけで空気を引きしめてくれます。",
+    stock: 3,
+  },
+  {
+    id: "peperomia-m",
+    name: "ペペロミア",
+    latin: "Peperomia",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい日陰・室内向き",
+    water: "土がしっかり乾いてから",
+    story:
+      "肉厚の葉に水をためこむタイプ。乾かし気味に育てるのが長もちのコツです。",
+    stock: 4,
+  },
+  {
+    id: "asparagus-m",
+    name: "アスパラガス",
+    latin: "Asparagus setaceus",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり。乾かしすぎに注意",
+    story:
+      "霧のようにふわふわの葉。乾燥が苦手なので、ときどき霧吹きをしてあげると元気に育ちます。",
+    stock: 3,
+  },
+  {
+    id: "cordyline-m",
+    name: "コルジリネ",
+    latin: "Cordyline fruticosa",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい室内（日に当てると色が冴えます）",
+    water: "土の表面が乾いたら たっぷり",
+    story:
+      "赤や黄色の葉色が一鉢ごとに少しずつ違います。お気に入りの色を選んでください。",
+    stock: 4,
+  },
   /* ---------- 2026-11 佐賀駅 初回入荷 ----------
    * 価格：Sサイズ（当店で植え込み）980円／Mサイズ 1,180円／Mのペペロミア 1,680円／ヒボタン 980円
    * 高さは入荷時の写真からの目安。stock は初回の陳列数。 */

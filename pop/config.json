@@ -3,14 +3,29 @@
   "baseUrl": "https://smart-store-theta.vercel.app",
   "lineUrl": "",
   "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。 color は文字・ロゴ・QRの色（看板サイズ確認図の青に合わせた明るいブルー。2026-11 決定）。",
-  "l11Sheet": {
-    "hibotan": 12,
-    "peperomia": 5,
-    "ficus-ruby": 5,
-    "schefflera": 4,
-    "pachira": 5,
-    "asparagus": 4,
-    "cordyline": 5
+  "l11Sheets": {
+    "01_初回": {
+      "hibotan": 12,
+      "peperomia": 5,
+      "ficus-ruby": 5,
+      "schefflera": 4,
+      "pachira": 5,
+      "asparagus": 4,
+      "cordyline": 5
+    },
+    "02_追加": {
+      "asplenium": 3,
+      "tokiwashinobu": 3,
+      "gajumaru-s": 11,
+      "asparagus": 2,
+      "pachira-s": 7,
+      "peperomia-s": 5,
+      "gajumaru-m": 5,
+      "sansevieria-m": 4,
+      "peperomia-m": 5,
+      "asparagus-m": 4,
+      "cordyline-m": 5
+    }
   },
-  "_note_l11Sheet": "L11 お会計QRシール（A4に40枚）に刷る商品と枚数。商品IDは lib/products.ts の id。合計40を超えると2枚目に続く。空にすると全商品をくり返す。"
+  "_note_l11Sheets": "L11 お会計QRシール（A4に40枚）。シート名ごとに「商品ID: 枚数」を書くと labels/L11_22.5x52_<シート名>.pdf ができる。40枚を超えると2ページ目に続く。商品IDは lib/products.ts の id。"
 }
