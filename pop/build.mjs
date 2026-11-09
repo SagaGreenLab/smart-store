@@ -435,8 +435,14 @@ async function main() {
   for (const L of LABELS) {
     const one = await Promise.all(products.map((p) => renderLabel(L, p, helpers)));
     const f = L.grid ? { w: L.size[0], h: L.size[1], crop: true, ...L.grid } : fit(L.size);
-    const cells = Array.from({ length: f.cols * f.rows }, (_, i) =>
-      L.shape || L.noCut ? `<div class="cell" style="outline:none;background:none">${one[i % one.length]}</div>` : one[i % one.length],
+    // L11 は config.json の l11Sheet（商品ID: 枚数）があれば、その順と枚数で面付けする
+    const plan = L.id === "L11" && config.l11Sheet && Object.keys(config.l11Sheet).length ? config.l11Sheet : null;
+    if (plan) for (const id of Object.keys(plan)) if (!products.some((p) => p.id === id)) throw new Error(`l11Sheet: 商品ID "${id}" が lib/products.ts にない`);
+    const picked = plan
+      ? Object.entries(plan).flatMap(([id, n]) => Array(n).fill(one[products.findIndex((p) => p.id === id)]))
+      : Array.from({ length: f.cols * f.rows }, (_, i) => one[i % one.length]);
+    const cells = picked.map((c) =>
+      L.shape || L.noCut ? `<div class="cell" style="outline:none;background:none">${c}</div>` : c,
     );
     const name = `labels/${L.id}_${L.size.join("x")}`;
     const file = path.join(htmlDir, `${name}.html`);

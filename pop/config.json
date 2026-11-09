@@ -2,5 +2,15 @@
   "color": "#2E6CB2",
   "baseUrl": "",
   "lineUrl": "",
-  "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。 color は文字・ロゴ・QRの色（看板サイズ確認図の青に合わせた明るいブルー。2026-11 決定）。"
+  "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。 color は文字・ロゴ・QRの色（看板サイズ確認図の青に合わせた明るいブルー。2026-11 決定）。",
+  "l11Sheet": {
+    "hibotan": 12,
+    "peperomia": 5,
+    "ficus-ruby": 5,
+    "schefflera": 4,
+    "pachira": 5,
+    "asparagus": 4,
+    "cordyline": 5
+  },
+  "_note_l11Sheet": "L11 お会計QRシール（A4に40枚）に刷る商品と枚数。商品IDは lib/products.ts の id。合計40を超えると2枚目に続く。空にすると全商品をくり返す。"
 }
