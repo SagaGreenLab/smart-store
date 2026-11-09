@@ -164,6 +164,8 @@ export const LABEL_CSS = `
 .L11 .rule.first{margin-top:1.4mm}
 .L11 .nm{font-size:6.2pt;font-weight:500;letter-spacing:.04em;line-height:1.25;white-space:nowrap}
 .L11 .latin{font-size:3.4pt;line-height:1.3;white-space:nowrap}
+.L11 .nm.long{font-size:5.4pt;white-space:normal;line-height:1.2;letter-spacing:.02em}
+.L11 .latin.long{font-size:2.9pt}
 .L11 .price{line-height:1;gap:.4mm}.L11 .price .n{font-size:10pt}.L11 .price .y{font-size:5.4pt}.L11 .price .t{font-size:3.6pt}
 .L11 .go{display:flex;align-items:center;justify-content:center;gap:.5mm;font-size:4.5pt;font-weight:500;letter-spacing:.02em;color:var(--ink-d);white-space:nowrap}
 .L11 .go svg{width:2mm;height:2mm;fill:none;stroke:var(--ink-d);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -243,7 +245,7 @@ export async function renderLabel(L, p, h) {
     case "L11":
       return box(
         `<i class="mark"></i>
-         <hr class="rule first"><p class="nm">${p.name}</p><p class="latin">${p.latin}</p>
+         <hr class="rule first"><p class="nm${p.name.length > 9 ? " long" : ""}">${p.name.replace(" ", p.name.length > 9 ? "<br>" : " ")}</p><p class="latin${p.latin.length > 26 ? " long" : ""}">${p.latin}</p>
          <hr class="rule">${price}
          <hr class="rule"><p class="go">お会計はこちらから<svg viewBox="0 0 12 12"><path d="M6 1.5v9M2.2 6.8 6 10.5l3.8-3.7"/></svg></p>
          ${qr}<p class="cap">育て方・商品詳細も<br>このページで<span class="en">Scan to pay</span></p>`,
