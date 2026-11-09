@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 import QRCode from "qrcode";
+import sharp from "sharp";
 import { createRequire } from "node:module";
 import { LABELS, LABEL_CSS, renderLabel, fit } from "./labels.mjs";
 // playwright はプロジェクト依存に入れていない（ローカルの npx playwright / グローバル導入を利用）
@@ -78,8 +79,20 @@ const icon = {
 
 /* ---------- 共通スタイル ---------- */
 const FONT_LINK = `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=block" rel="stylesheet">`;
-// マスク画像は file:// だと読めないため data URI で埋め込む
-const asset = (n) => "data:image/png;base64," + fs.readFileSync(path.join(here, "assets", n)).toString("base64");
+// ロゴは「形（透明度）」だけ使い、色は本体色で塗り直した PNG を data URI で埋め込む。
+// CSS の mask で塗ると、PDF を印刷したときに画像のふちに細い線（四角い枠）が出るため使わない。
+async function tintedAsset(n) {
+  const { data, info } = await sharp(path.join(here, "assets", n)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const [r, g, b] = hex(INK);
+  for (let i = 0; i < data.length; i += 4) [data[i], data[i + 1], data[i + 2]] = [r, g, b];
+  const png = await sharp(data, { raw: info }).png().toBuffer();
+  return "data:image/png;base64," + png.toString("base64");
+}
+const LOGO = {
+  mark: await tintedAsset("mark_blue.png"),
+  wordmark: await tintedAsset("wordmark_blue.png"),
+  lockup: await tintedAsset("lockup_blue.png"),
+};
 
 const BASE_CSS = `
 :root{
@@ -100,11 +113,11 @@ body{font-family:var(--jp);color:var(--ink);-webkit-print-color-adjust:exact;pri
 svg.i, .ic svg{fill:none;stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round}
 .qr svg{display:block;width:100%;height:100%}
 .sample{display:block;font-size:5pt;color:#C2410C;letter-spacing:.05em;text-align:center;margin-top:.6mm}
-/* ロゴは形だけ使い、色は --ink で塗る（色を変えてもロゴが追従する） */
-.mark,.wordmark,.lockup{display:block;background:var(--ink);-webkit-mask:var(--src) center/contain no-repeat;mask:var(--src) center/contain no-repeat}
-.mark{--src:url(${asset("mark_blue.png")})}
-.wordmark{--src:url(${asset("wordmark_blue.png")})}
-.lockup{--src:url(${asset("lockup_blue.png")})}
+/* ロゴは本体色で塗り直した画像（色を変えてもロゴが追従する） */
+.mark,.wordmark,.lockup{display:block;background:var(--src) center/contain no-repeat}
+.mark{--src:url(${LOGO.mark})}
+.wordmark{--src:url(${LOGO.wordmark})}
+.lockup{--src:url(${LOGO.lockup})}
 .mark,.wordmark,.lockup,.qr,.ic{flex:none}
 .rule{border:0;border-top:.25mm solid var(--ink);opacity:.9}
 .hair{border:0;border-top:.15mm solid var(--rule)}
@@ -323,7 +336,7 @@ const SMALL_CSS = `
 .line .eyebrow{font-size:5.6pt;letter-spacing:.14em;color:var(--ink-3)}
 .line h2{font-size:11pt;font-weight:500;letter-spacing:.06em;line-height:1.45;margin-top:1.2mm}
 .line p{font-size:6.2pt;color:var(--ink-2);line-height:1.7;margin-top:1.6mm}
-.line .wm{margin-top:auto;width:30mm;height:5.4mm;-webkit-mask-position:left center;mask-position:left center}
+.line .wm{margin-top:auto;width:30mm;height:5.4mm;background-position:left center}
 .line .r{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .line .qr{width:20mm;height:20mm}
 .line .ph{width:20mm;height:20mm;border:.2mm dashed var(--rule);display:flex;align-items:center;justify-content:center;text-align:center;font-size:5pt;color:var(--ink-3);line-height:1.5}

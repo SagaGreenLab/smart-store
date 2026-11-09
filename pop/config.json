@@ -25,6 +25,9 @@
       "peperomia-m": 5,
       "asparagus-m": 4,
       "cordyline-m": 5
+    },
+    "03_オベサ": {
+      "euphorbia-obesa": 15
     }
   },
   "_note_l11Sheets": "L11 お会計QRシール（A4に40枚）。シート名ごとに「商品ID: 枚数」を書くと labels/L11_22.5x52_<シート名>.pdf ができる。40枚を超えると2ページ目に続く。商品IDは lib/products.ts の id。"
