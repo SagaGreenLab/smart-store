@@ -14,7 +14,13 @@ import {
 } from "@/lib/cart";
 import { findProduct } from "@/lib/products";
 import { PAYMENT_CHOICES, type PaymentTypeKey } from "@/lib/payment-methods";
-import { ShopHeader, ShopFooter, NoCashAlert } from "@/components/Brand";
+import {
+  ShopHeader,
+  ShopFooter,
+  NoCashAlert,
+  Eyebrow,
+  PlantIcon,
+} from "@/components/Brand";
 
 /**
  * サーバーが JSON を返せなかったときも落とさずに読む。
@@ -130,33 +136,42 @@ export default function CartPage() {
     <main className="dg-wrap">
       <ShopHeader backHref="/" />
 
-      <h1 className="dg-h1">ご注文の確認</h1>
+      <div className="dg-mt-1">
+        <h1 className="dg-h1">ご注文の確認</h1>
+        <p className="dg-en">Your order</p>
+      </div>
 
       {items.length === 0 ? (
         <>
-          <p className="dg-body dg-mt-3">
-            カートに鉢がありません。棚の値札のQRコードを読み取ってください。
-          </p>
-          <div className="dg-mt-3">
+          <section className="dg-card dg-mt-3">
+            <p className="dg-body">
+              カートに鉢がありません。
+              <br />
+              棚のラベルにあるQRコードを読み取ってください。
+            </p>
+            <p className="dg-en">Scan the QR code on a pot to start.</p>
+          </section>
+          <div className="dg-mt-2">
             <Link href="/" className="dg-btn-outline">
-              商品一覧を見る
+              鉢を見る
+              <small>See the plants</small>
             </Link>
           </div>
         </>
       ) : (
         <>
-          <div className="dg-mt-2" style={{ borderTop: "1px solid var(--rule)" }}>
+          <section className="dg-card dg-mt-3">
             {items.map((item) => {
               const product = findProduct(item.id);
               return (
                 <div key={item.id} className="dg-item">
-                  <span className="thumb" aria-hidden="true">
-                    <svg width="28" height="28" viewBox="0 0 120 120" fill="none" stroke="var(--moss-soft)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M39 94h42l-5 20H44z" />
-                      <path d="M60 94V50" />
-                      <path d="M60 72c-15-2-24-13-24-26 13 0 24 9 24 26z" />
-                      <path d="M60 62c15-2 24-13 24-26-13 0-24 9-24 26z" />
-                    </svg>
+                  <span className="thumb">
+                    {product?.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={product.image} alt="" aria-hidden="true" />
+                    ) : (
+                      <PlantIcon size={26} />
+                    )}
                   </span>
 
                   <span className="body">
@@ -167,7 +182,7 @@ export default function CartPage() {
                       </span>
                     )}
                     <span className="qty">
-                      数量 {item.quantity}
+                      <span>数量 {item.quantity}</span>
                       <button type="button" onClick={() => removeItem(item.id)}>
                         取り消す
                       </button>
@@ -180,30 +195,35 @@ export default function CartPage() {
                 </div>
               );
             })}
-          </div>
+          </section>
 
-          <div className="dg-mt-3" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 13.5, color: "var(--ink-3)" }}>小計（{count}点）</span>
-              <span className="dg-plain">¥{total.toLocaleString()}</span>
+          <section className="dg-card">
+            <div className="dg-sum">
+              <span className="k">小計（{count}点）</span>
+              <span className="v">¥{total.toLocaleString()}</span>
             </div>
-            <div className="dg-hr" style={{ margin: 0, background: "var(--rule-3)" }} />
-            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: ".04em" }}>お支払い金額</span>
+
+            <hr className="dg-hr tight" />
+
+            <div className="dg-total">
+              <span className="k">
+                お支払い金額
+                <small>Total</small>
+              </span>
               <p className="dg-price lg">
                 <span className="n">¥{total.toLocaleString()}</span>
                 <span className="tax">税込</span>
               </p>
             </div>
-          </div>
+          </section>
 
-          <div className="dg-mt-3">
+          <div className="dg-mt-2">
             <NoCashAlert />
           </div>
 
           {/* Square Terminal API が paymentType を要求するため、ここで区分だけ選んでいただく */}
-          <div className="dg-mt-3">
-            <p className="dg-eyebrow">お支払い方法</p>
+          <section className="dg-card dg-mt-2">
+            <Eyebrow ja="お支払い方法" en="PAYMENT METHOD" />
 
             <div className="dg-choice">
               {PAYMENT_CHOICES.map((choice) => (
@@ -214,11 +234,15 @@ export default function CartPage() {
                   className={paymentType === choice.key ? "on" : ""}
                   aria-pressed={paymentType === choice.key}
                 >
-                  {choice.label}
+                  <span className="dot" aria-hidden="true" />
+                  <span>
+                    {choice.label}
+                    <small>{choice.sub}</small>
+                  </span>
                 </button>
               ))}
             </div>
-          </div>
+          </section>
 
           {error && (
             <p
@@ -230,7 +254,7 @@ export default function CartPage() {
             </p>
           )}
 
-          <div className="dg-mt-4">
+          <div className="dg-mt-3">
             <button
               type="button"
               onClick={startPayment}
@@ -238,13 +262,12 @@ export default function CartPage() {
               className="dg-btn"
             >
               {loading ? "端末に送信しています…" : "お支払いへ進む"}
+              {!loading && <small>Continue to payment</small>}
             </button>
           </div>
 
           <p className="dg-caption">
-            この先、レジ横の端末にカードやスマートフォンを
-            <br />
-            かざしていただきます。
+            この先、レジ横の端末にカードやスマートフォンをかざしていただきます。
           </p>
         </>
       )}
