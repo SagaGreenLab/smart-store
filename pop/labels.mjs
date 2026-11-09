@@ -1,5 +1,6 @@
 /**
- * 鉢につける販売ラベル 10パターン（形・サイズ違い）
+ * 鉢につける販売ラベル 11パターン（形・サイズ違い）
+ * L11 は画像生成案 D02（pop/codex/）を組み直した「QR＝お会計の入り口」のシール。
  *
  * どれも「品名・価格・購入用QR」は必ず入れる。
  * 色・書体・ロゴは build.mjs の共通スタイル（看板と同じブルー1色）を使う。
@@ -28,6 +29,13 @@ export const LABELS = [
   { id: "L08", name: "ヨコ長スリム", size: [74, 26], use: "鉢のふちのすぐ下に貼る。値札シールの感覚で" },
   { id: "L09", name: "育て方カード", size: [55, 91], use: "「店主より」のひとことと育て方入り。ギフト向けにそのまま持ち帰り" },
   { id: "L10", name: "表組み（クラフト）", size: [50, 76], use: "品名・鉢・価格を罫線の表で。いちばん“無印らしい”形", kraft: true },
+  {
+    id: "L11",
+    name: "お会計QRシール（D02）",
+    size: [40, 85],
+    use: "鉢の正面に貼るタテ長シール。上から品名→価格→お会計QRの順に目線が下りる",
+    shape: true,
+  },
 ];
 
 export const LABEL_CSS = `
@@ -145,6 +153,20 @@ export const LABEL_CSS = `
 .L10 .bt p{font-size:5.4pt;line-height:1.6;color:var(--ink-2)}
 .L10 .bt p .en{display:block;font-size:4.6pt;color:var(--ink-3)}
 .L10 .bt .mark{width:6mm;height:5.6mm;margin-top:1.6mm}
+
+/* L11 お会計QRシール（D02） */
+.L11 .in{display:flex;flex-direction:column;align-items:center;padding:4.4mm 3.6mm 3.4mm;text-align:center}
+.L11 .mark{width:10mm;height:9.4mm}
+.L11 .rule{width:100%;border-top:.2mm solid var(--ink);margin:2mm 0}
+.L11 .rule.first{margin-top:2.4mm}
+.L11 .nm{font-size:10.5pt;font-weight:500;letter-spacing:.1em;line-height:1.3}
+.L11 .latin{font-size:5.2pt}
+.L11 .price .n{font-size:15pt}.L11 .price .y{font-size:8pt}.L11 .price .t{font-size:5pt}
+.L11 .go{display:flex;align-items:center;justify-content:center;gap:1.2mm;font-size:7.4pt;font-weight:500;letter-spacing:.08em;color:var(--ink-d)}
+.L11 .go svg{width:3mm;height:3mm;fill:none;stroke:var(--ink-d);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.L11 .qr{width:29mm;height:29mm;margin-top:1.6mm}
+.L11 .cap{font-size:5.2pt;line-height:1.5;color:var(--ink-2);margin-top:1.4mm;letter-spacing:.04em}
+.L11 .cap .en{display:block;font-family:var(--en);font-size:4.8pt;color:var(--ink-3);letter-spacing:.12em}
 `;
 
 /** 各ラベルのHTML（商品1つぶん） */
@@ -213,6 +235,15 @@ export async function renderLabel(L, p, h) {
           <tr><th>価格</th><td class="pr">${price}</td></tr>
         </table>
         <div class="bt"><div>${qr}</div><div><p>読みとって<br>お会計へ<span class="en">Scan to buy</span></p><i class="mark"></i></div></div>`,
+      );
+    case "L11":
+      return box(
+        `<i class="mark"></i>
+         <hr class="rule first"><p class="nm">${p.name}</p><p class="latin">${p.latin}</p>
+         <hr class="rule">${price}
+         <hr class="rule"><p class="go">お会計はこちらから<svg viewBox="0 0 12 12"><path d="M6 1.5v9M2.2 6.8 6 10.5l3.8-3.7"/></svg></p>
+         ${qr}<p class="cap">育て方・商品詳細も このページで<span class="en">Scan to pay</span></p>`,
+        cutShape(w, hgt, `M3.2 .6H${w - 3.2}Q${w - .6} .6 ${w - .6} 3.2V${hgt - 3.2}Q${w - .6} ${hgt - .6} ${w - 3.2} ${hgt - .6}H3.2Q.6 ${hgt - .6} .6 ${hgt - 3.2}V3.2Q.6 .6 3.2 .6Z`),
       );
   }
   throw new Error(`unknown label ${L.id}`);

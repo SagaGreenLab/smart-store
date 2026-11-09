@@ -445,7 +445,8 @@ async function main() {
     );
   PREVIEWS.push(
     ["labels/labels_01-05", overview("labels A", tiles.slice(0, 5))],
-    ["labels/labels_06-10", overview("labels B", tiles.slice(5))],
+    ["labels/labels_06-10", overview("labels B", tiles.slice(5, 10))],
+    ["labels/labels_11", overview("labels C", tiles.slice(10))],
   );
 
   const browser = await chromium.launch();
