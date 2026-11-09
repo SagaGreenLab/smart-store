@@ -1,6 +1,7 @@
 /**
  * 鉢につける販売ラベル 11パターン（形・サイズ違い）
  * L11 は画像生成案 D02（pop/codex/）を組み直した「QR＝お会計の入り口」のシール。
+ *   A4 40面（52.5×29.7mm・4列×10段・余白なし）のラベル用紙にそのまま刷れる。
  *
  * どれも「品名・価格・購入用QR」は必ず入れる。
  * 色・書体・ロゴは build.mjs の共通スタイル（看板と同じブルー1色）を使う。
@@ -31,10 +32,11 @@ export const LABELS = [
   { id: "L10", name: "表組み（クラフト）", size: [50, 76], use: "品名・鉢・価格を罫線の表で。いちばん“無印らしい”形", kraft: true },
   {
     id: "L11",
-    name: "お会計QRシール（D02）",
-    size: [40, 85],
-    use: "鉢の正面に貼るタテ長シール。上から品名→価格→お会計QRの順に目線が下りる",
-    shape: true,
+    name: "お会計QRシール（D02・A4 40面）",
+    size: [52.5, 29.7],
+    use: "A4 40面のラベル用紙（4列×10段・余白なし）用。品名・価格の右に「お会計はこちらから→」でQRへ",
+    grid: { cols: 4, rows: 10 },
+    noCut: true,
   },
 ];
 
@@ -154,19 +156,23 @@ export const LABEL_CSS = `
 .L10 .bt p .en{display:block;font-size:4.6pt;color:var(--ink-3)}
 .L10 .bt .mark{width:6mm;height:5.6mm;margin-top:1.6mm}
 
-/* L11 お会計QRシール（D02） */
-.L11 .in{display:flex;flex-direction:column;align-items:center;padding:4.4mm 3.6mm 3.4mm;text-align:center}
-.L11 .mark{width:10mm;height:9.4mm}
-.L11 .rule{width:100%;border-top:.2mm solid var(--ink);margin:2mm 0}
-.L11 .rule.first{margin-top:2.4mm}
-.L11 .nm{font-size:10.5pt;font-weight:500;letter-spacing:.1em;line-height:1.3}
-.L11 .latin{font-size:5.2pt}
-.L11 .price .n{font-size:15pt}.L11 .price .y{font-size:8pt}.L11 .price .t{font-size:5pt}
-.L11 .go{display:flex;align-items:center;justify-content:center;gap:1.2mm;font-size:7.4pt;font-weight:500;letter-spacing:.08em;color:var(--ink-d)}
-.L11 .go svg{width:3mm;height:3mm;fill:none;stroke:var(--ink-d);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.L11 .qr{width:29mm;height:29mm;margin-top:1.6mm}
-.L11 .cap{font-size:5.2pt;line-height:1.5;color:var(--ink-2);margin-top:1.4mm;letter-spacing:.04em}
-.L11 .cap .en{display:block;font-family:var(--en);font-size:4.8pt;color:var(--ink-3);letter-spacing:.12em}
+/* L11 お会計QRシール（D02・A4 40面 52.5×29.7）
+   用紙の端は刷れないプリンターが多いので、内側に2.6mmの余白をとる */
+.L11 .in{display:grid;grid-template-columns:1fr 21mm;column-gap:2mm;align-items:stretch;padding:2.6mm 2.4mm 2.4mm 3mm}
+.L11 .lt{display:flex;flex-direction:column;min-width:0}
+.L11 .nm{font-size:7.6pt;font-weight:500;letter-spacing:.04em;line-height:1.25;white-space:nowrap}
+.L11 .latin{font-size:4.2pt;line-height:1.3;white-space:nowrap;overflow:hidden}
+.L11 .rule{border-top:.18mm solid var(--ink);margin:1.1mm 0 1mm}
+.L11 .price{justify-content:flex-start;line-height:1}.L11 .price .n{font-size:12pt}.L11 .price .y{font-size:6.6pt}.L11 .price .t{font-size:4.4pt}
+.L11 .go{display:flex;align-items:center;gap:.8mm;font-size:5.6pt;font-weight:500;letter-spacing:.04em;color:var(--ink-d);white-space:nowrap}
+.L11 .go svg{width:2.6mm;height:2.6mm;fill:none;stroke:var(--ink-d);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.L11 .ft{margin-top:auto;display:flex;align-items:center;gap:1mm}
+.L11 .ft .mark{width:4.2mm;height:4mm}
+.L11 .cap{font-size:3.7pt;line-height:1.45;color:var(--ink-2)}
+.L11 .rt{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.L11 .qr{width:21mm;height:21mm}
+.L11 .en{font-family:var(--en);font-size:3.8pt;letter-spacing:.14em;color:var(--ink-3);margin-top:.5mm}
+.L11 .sample{position:absolute;right:2.4mm;bottom:.6mm;margin:0;font-size:3.4pt}
 `;
 
 /** 各ラベルのHTML（商品1つぶん） */
@@ -238,12 +244,13 @@ export async function renderLabel(L, p, h) {
       );
     case "L11":
       return box(
-        `<i class="mark"></i>
-         <hr class="rule first"><p class="nm">${p.name}</p><p class="latin">${p.latin}</p>
-         <hr class="rule">${price}
-         <hr class="rule"><p class="go">お会計はこちらから<svg viewBox="0 0 12 12"><path d="M6 1.5v9M2.2 6.8 6 10.5l3.8-3.7"/></svg></p>
-         ${qr}<p class="cap">育て方・商品詳細も このページで<span class="en">Scan to pay</span></p>`,
-        cutShape(w, hgt, `M3.2 .6H${w - 3.2}Q${w - .6} .6 ${w - .6} 3.2V${hgt - 3.2}Q${w - .6} ${hgt - .6} ${w - 3.2} ${hgt - .6}H3.2Q.6 ${hgt - .6} .6 ${hgt - 3.2}V3.2Q.6 .6 3.2 .6Z`),
+        `<div class="lt">
+           <p class="nm">${p.name}</p><p class="latin">${p.latin}</p>
+           <hr class="rule">${price}<hr class="rule">
+           <p class="go">お会計はこちらから<svg viewBox="0 0 12 12"><path d="M1.5 6h9M6.8 2.2 10.5 6 6.8 9.8"/></svg></p>
+           <div class="ft"><i class="mark"></i><p class="cap">育て方・商品詳細も<br>このページで</p></div>
+         </div>
+         <div class="rt">${qr}<p class="en">Scan to pay</p></div>`,
       );
   }
   throw new Error(`unknown label ${L.id}`);

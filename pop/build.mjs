@@ -416,9 +416,9 @@ async function main() {
   const tiles = [];
   for (const L of LABELS) {
     const one = await Promise.all(products.map((p) => renderLabel(L, p, helpers)));
-    const f = fit(L.size);
+    const f = L.grid ? { w: L.size[0], h: L.size[1], ...L.grid } : fit(L.size);
     const cells = Array.from({ length: f.cols * f.rows }, (_, i) =>
-      L.shape ? `<div class="cell" style="outline:none;background:none">${one[i % one.length]}</div>` : one[i % one.length],
+      L.shape || L.noCut ? `<div class="cell" style="outline:none;background:none">${one[i % one.length]}</div>` : one[i % one.length],
     );
     const name = `labels/${L.id}_${L.size.join("x")}`;
     const file = path.join(htmlDir, `${name}.html`);
@@ -426,7 +426,7 @@ async function main() {
     PRINT_JOBS.push({ name, file });
     tiles.push(
       `<figure class="tile"><div class="stage">${await renderLabel(L, sample, helpers)}</div>
-        <figcaption><b>${L.id.replace("L", "")}</b>${L.name}<span class="sz">${L.size[0]}×${L.size[1]}mm</span><span class="use">${L.use}</span></figcaption></figure>`,
+        <figcaption><b>${L.id.replace("L", "")}</b>${L.name}<span class="sz">${L.size[0]}×${L.size[1]}mm${L.grid ? `・A4 ${L.grid.cols * L.grid.rows}面` : ""}</span><span class="use">${L.use}</span></figcaption></figure>`,
     );
   }
   const overview = (title, list) =>
