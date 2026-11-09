@@ -111,17 +111,35 @@ svg.i, .ic svg{fill:none;stroke:var(--ink);stroke-linecap:round;stroke-linejoin:
 @page{size:A4;margin:0}
 .sheet{width:210mm;height:297mm;display:grid;align-content:center;justify-content:center;page-break-after:always;overflow:hidden}
 .sheet:last-child{page-break-after:auto}
+.sheet{position:relative}
+.crop{position:absolute;inset:0;fill:none;stroke:#8A8A8A;stroke-width:.12}
 .cell{outline:.1mm dashed #D9D9D9;outline-offset:0;background:var(--paper);overflow:hidden;position:relative}
 `;
 
-function sheets(cells, { w, h, cols, rows }) {
+/** トンボ：用紙のふちに、ラベルの裁ち位置を示す短い線だけを描く（ラベルの上には描かない） */
+function cropMarks({ w, h, cols, rows, gap = 0 }) {
+  const W = 210, H = 297, len = 3.5, off = 1.5;
+  const x0 = (W - (cols * w + (cols - 1) * gap)) / 2;
+  const y0 = (H - (rows * h + (rows - 1) * gap)) / 2;
+  const xs = Array.from({ length: cols }, (_, c) => [x0 + c * (w + gap), x0 + c * (w + gap) + w]).flat();
+  const ys = Array.from({ length: rows }, (_, r) => [y0 + r * (h + gap), y0 + r * (h + gap) + h]).flat();
+  const l = [
+    ...xs.flatMap((x) => [[x, y0 - off - len, x, y0 - off], [x, H - y0 + off, x, H - y0 + off + len]]),
+    ...ys.flatMap((y) => [[x0 - off - len, y, x0 - off, y], [W - x0 + off, y, W - x0 + off + len, y]]),
+  ];
+  return `<svg class="crop" viewBox="0 0 ${W} ${H}" width="${W}mm" height="${H}mm">${l
+    .map(([a, b, c, d]) => `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}"/>`)
+    .join("")}</svg>`;
+}
+
+function sheets(cells, { w, h, cols, rows, gap = 0, crop = false }) {
   const per = cols * rows;
   const pages = [];
   for (let i = 0; i < cells.length; i += per) {
     const chunk = cells.slice(i, i + per);
     while (chunk.length < per) chunk.push(`<div class="cell blank" style="outline:none"></div>`);
     pages.push(
-      `<section class="sheet" style="grid-template-columns:repeat(${cols},${w}mm);grid-auto-rows:${h}mm">${chunk
+      `<section class="sheet" style="grid-template-columns:repeat(${cols},${w}mm);grid-auto-rows:${h}mm;gap:${gap}mm">${crop ? cropMarks({ w, h, cols, rows, gap }) : ""}${chunk
         .map((c) => (c.startsWith('<div class="cell') ? c : `<div class="cell">${c}</div>`))
         .join("")}</section>`,
     );
@@ -416,7 +434,7 @@ async function main() {
   const tiles = [];
   for (const L of LABELS) {
     const one = await Promise.all(products.map((p) => renderLabel(L, p, helpers)));
-    const f = L.grid ? { w: L.size[0], h: L.size[1], ...L.grid } : fit(L.size);
+    const f = L.grid ? { w: L.size[0], h: L.size[1], crop: true, ...L.grid } : fit(L.size);
     const cells = Array.from({ length: f.cols * f.rows }, (_, i) =>
       L.shape || L.noCut ? `<div class="cell" style="outline:none;background:none">${one[i % one.length]}</div>` : one[i % one.length],
     );
@@ -426,7 +444,7 @@ async function main() {
     PRINT_JOBS.push({ name, file });
     tiles.push(
       `<figure class="tile"><div class="stage">${await renderLabel(L, sample, helpers)}</div>
-        <figcaption><b>${L.id.replace("L", "")}</b>${L.name}<span class="sz">${L.size[0]}×${L.size[1]}mm${L.grid ? `・A4 ${L.grid.cols * L.grid.rows}面` : ""}</span><span class="use">${L.use}</span></figcaption></figure>`,
+        <figcaption><b>${L.id.replace("L", "")}</b>${L.name}<span class="sz">${L.size[0]}×${L.size[1]}mm${L.grid ? `・A4に${L.grid.cols * L.grid.rows}枚` : ""}</span><span class="use">${L.use}</span></figcaption></figure>`,
     );
   }
   const overview = (title, list) =>
