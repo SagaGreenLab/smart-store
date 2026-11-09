@@ -88,5 +88,16 @@ python3 pop/codex/generate.py          # まだ無い案だけ生成（C03 C08 �
 python3 pop/codex/contact_sheet.py     # 一覧画像を作り直す
 ```
 
+### 決済導線版 3パターン（D01〜D03）
+
+C07・C09・C08 をもとに、QRを「決済サイトへの入り口」として主役にした案。
+QRのすぐ上に「お会計はこちらから」、下に「育て方・商品詳細もこのページで」を入れる。
+もとの案の画像も参照に渡して雰囲気を引き継いでいる。一覧は `pop/codex/00_一覧_決済導線版.png`。
+
+```bash
+python3 pop/codex/generate.py D01 D02 D03
+python3 pop/codex/contact_sheet.py D
+```
+
 APIキーはクラウド環境のネットワークシークレット（api.openai.com）から自動で付くので、
 コードやファイルにキーを書く必要はない。

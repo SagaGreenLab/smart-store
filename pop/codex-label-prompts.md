@@ -38,3 +38,15 @@ and a square QR code. Soft natural daylight, shallow depth of field, photorealis
 
 - サイズ `1536x1024`、quality `high`、1プロンプトにつき1枚
 - 「日本語の文字は崩れてもよい。形・素材・レイアウトの方向性が分かればよい」と添える
+
+## 決済導線版 3パターン（D01〜D03）
+
+C07・C09・C08 をもとに、QRコードを「決済サイトへの入り口」として主役にした案。
+QRのすぐ上に「お会計はこちらから」を入れ、QRの下に「育て方・商品詳細もこのページで」を小さく添える
+（決済サイトの商品ページに育て方・商品詳細も載せるため）。
+
+| No | 名前 | サイズ想定 | プロンプト（共通ルールの後ろに付ける） |
+| --- | --- | --- | --- |
+| D01 | お会計QRピック＋ふちシール | ピックφ55＋シール90×20 | `Two pieces, designed as one system. (1) A round white QR pick, about 55mm, standing on a slim stake just above the leaves so it is visible from the front of the shelf. The pick is the hero and the entrance to checkout: at the top a short heading "お会計はこちらから" with a small downward arrow, a LARGE QR code filling most of the circle, and under it tiny text "育て方・商品詳細もこちら / Scan to pay". (2) A slim name-and-price sticker on the front of the pot rim with the cat logo, plant name and "¥1,980 税込", plus a tiny upward arrow pointing to the pick. The QR is clearly the most prominent element.` |
+| D02 | お会計QR吊りワイヤータグ | 40×85mm | `A slim white tag hanging from a thin galvanized wire hook on the front edge of the pot, facing the customer, galvanized steel pipe shelf and reclaimed wood board behind. Top third: small cat logo, plant name, Latin name, "¥1,980 税込" separated by hairline rules. Bottom two thirds is the hero, the entrance to checkout: a heading "お会計はこちらから ↓" in blue, a LARGE QR code using the full width of the tag, and under it small text "育て方・商品詳細もこのページで / Scan to pay". The QR is clearly the most prominent element.` |
+| D03 | お会計QR切符 | 80×40mm | `The label is designed like a vintage Japanese railway hard ticket on cream card with blue print, clipped with a small clip to a 13mm galvanized steel pipe rail at the front of a reclaimed wood shelf, a potted plant behind. Left part (like the ticket stub): cat logo, plant name, Latin name, "¥1,980 税込", tiny "JR佐賀駅" station-style text. A perforated dotted line separates the right part, which works like a ticket gate into checkout: a heading "お会計はこちらから" with a small arrow, a LARGE QR code, and a small caption "育て方・商品詳細も / Scan to pay". The QR side is clearly the most prominent.` |
