@@ -157,21 +157,20 @@ export const LABEL_CSS = `
 .L10 .bt p .en{display:block;font-size:4.6pt;color:var(--ink-3)}
 .L10 .bt .mark{width:6mm;height:5.6mm;margin-top:1.6mm}
 
-/* L11 お会計QRシール（D02・タテ長 22.5×52mm） */
-.L11 .in{display:flex;flex-direction:column;align-items:center;padding:2.6mm 1.6mm 2mm;text-align:center}
-.L11 .mark{width:5.8mm;height:5.5mm}
-.L11 .rule{width:100%;border-top:.15mm solid var(--ink);margin:1.1mm 0}
-.L11 .rule.first{margin-top:1.4mm}
-.L11 .nm{font-size:6.2pt;font-weight:500;letter-spacing:.04em;line-height:1.25;white-space:nowrap}
-.L11 .latin{font-size:3.4pt;line-height:1.3;white-space:nowrap}
-.L11 .nm.long{font-size:5.4pt;white-space:normal;line-height:1.2;letter-spacing:.02em}
-.L11 .latin.long{font-size:2.9pt}
-.L11 .price{line-height:1;gap:.4mm}.L11 .price .n{font-size:10pt}.L11 .price .y{font-size:5.4pt}.L11 .price .t{font-size:3.6pt}
-.L11 .go{display:flex;align-items:center;justify-content:center;gap:.5mm;font-size:4.5pt;font-weight:500;letter-spacing:.02em;color:var(--ink-d);white-space:nowrap}
-.L11 .go svg{width:2mm;height:2mm;fill:none;stroke:var(--ink-d);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.L11 .qr{width:17.4mm;height:17.4mm;margin-top:.9mm}
-.L11 .cap{font-size:3.3pt;line-height:1.45;color:var(--ink-2);margin-top:.9mm}
-.L11 .cap .en{display:block;font-family:var(--en);font-size:3.1pt;color:var(--ink-3);letter-spacing:.12em}
+/* L11 お会計QRシール（D02・タテ長 22.5×52mm）
+   QRは読み取れる最小に近い 11.6mm（1マス約0.35mm）にして、そのぶん文字を大きくしている */
+.L11 .in{display:flex;flex-direction:column;align-items:center;padding:2.3mm 1.4mm 1.6mm;text-align:center}
+.L11 .mark{width:6.6mm;height:6.2mm}
+.L11 .rule{width:100%;border-top:.15mm solid var(--ink);margin:1mm 0}
+.L11 .rule.first{margin-top:1.2mm}
+.L11 .nm{font-weight:500;line-height:1.2;white-space:nowrap}
+.L11 .latin{line-height:1.3;white-space:nowrap;margin-top:.2mm}
+.L11 .price{line-height:1;gap:.5mm}.L11 .price .n{font-size:13pt}.L11 .price .y{font-size:7pt}.L11 .price .t{font-size:4.6pt}
+.L11 .go{display:flex;align-items:center;justify-content:center;gap:.5mm;font-size:5.2pt;font-weight:500;color:var(--ink-d);white-space:nowrap}
+.L11 .go svg{width:2.4mm;height:2.4mm;fill:none;stroke:var(--ink-d);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.L11 .qr{width:11.6mm;height:11.6mm;margin-top:1.2mm}
+.L11 .cap{font-size:4.3pt;line-height:1.35;color:var(--ink-2);margin-top:1.1mm}
+.L11 .cap .en{display:block;font-family:var(--en);font-size:3.8pt;color:var(--ink-3);letter-spacing:.1em;margin-top:.2mm}
 .L11 .sample{position:absolute;left:0;right:0;bottom:.3mm;margin:0;font-size:2.8pt}
 `;
 
@@ -242,14 +241,20 @@ export async function renderLabel(L, p, h) {
         </table>
         <div class="bt"><div>${qr}</div><div><p>読みとって<br>お会計へ<span class="en">Scan to buy</span></p><i class="mark"></i></div></div>`,
       );
-    case "L11":
+    case "L11": {
+      // 品名・学名は幅（約19mm）に収まる大きさに自動で縮める。長い品名は「・」かスペースで2行に
+      const lines = p.name.length > 9 ? p.name.split(/[・ ]/) : [p.name];
+      const longest = Math.max(...lines.map((l) => l.length));
+      const nmPt = Math.min(7.4, 19 / (longest * 0.3528)).toFixed(2);
+      const laPt = Math.min(3.9, 19 / (p.latin.length * 0.3528 * 0.47)).toFixed(2);
       return box(
         `<i class="mark"></i>
-         <hr class="rule first"><p class="nm${p.name.length > 9 ? " long" : ""}">${p.name.replace(" ", p.name.length > 9 ? "<br>" : " ")}</p><p class="latin${p.latin.length > 26 ? " long" : ""}">${p.latin}</p>
+         <hr class="rule first"><p class="nm" style="font-size:${nmPt}pt">${lines.join("<br>")}</p><p class="latin" style="font-size:${laPt}pt">${p.latin}</p>
          <hr class="rule">${price}
          <hr class="rule"><p class="go">お会計はこちらから<svg viewBox="0 0 12 12"><path d="M6 1.5v9M2.2 6.8 6 10.5l3.8-3.7"/></svg></p>
          ${qr}<p class="cap">育て方・商品詳細も<br>このページで<span class="en">Scan to pay</span></p>`,
       );
+    }
   }
   throw new Error(`unknown label ${L.id}`);
 }
