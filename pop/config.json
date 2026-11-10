@@ -1,7 +1,7 @@
 {
   "color": "#2E6CB2",
   "baseUrl": "https://smart-store-theta.vercel.app",
-  "lineUrl": "",
+  "lineUrl": "https://line.me/R/ti/p/@327quoas",
   "_note": "baseUrl に決済サイトの本番URL（例: https://xxxx.vercel.app）、lineUrl にLINE公式の友だち追加URLを入れて `npm run pop` で再出力。空欄のあいだはQRの下に「見本」と出ます。 color は文字・ロゴ・QRの色（看板サイズ確認図の青に合わせた明るいブルー。2026-11 決定）。",
   "l11Sheets": {
     "01_初回": {

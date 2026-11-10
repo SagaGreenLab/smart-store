@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- LINE公式アカウント リッチメニュー（大・6分割 2500×1686）。 npm run line で PNG/JPEG を出力 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1E4B9C; --ink-2:#3F67B4; --sub:#6F93D4; --rule:#B9CBE8; --canvas:#E9E6E0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:2500px;height:1686px;background:#fff}
+body{font-family:'Zen Kaku Gothic New',sans-serif;color:var(--ink)}
+.grid{width:2500px;height:1686px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)}
+.t{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 40px 70px}
+/* 罫線で区切る（枠や影は使わない） */
+.t:nth-child(-n+3){border-bottom:3px solid var(--rule)}
+.t:not(:nth-child(3n)){border-right:3px solid var(--rule)}
+.t svg{width:250px;height:250px;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.t .n{position:absolute;top:44px;left:52px;font-family:Lato,sans-serif;font-weight:300;font-size:44px;color:var(--sub);letter-spacing:.04em}
+.t h2{margin-top:54px;font-weight:500;font-size:80px;letter-spacing:.08em;line-height:1.35;white-space:nowrap}
+.t p{margin-top:20px;font-size:44px;color:var(--ink-2);letter-spacing:.08em;line-height:1.5}
+.t .en{margin-top:16px;font-family:Lato,sans-serif;font-weight:300;font-size:38px;color:var(--sub);letter-spacing:.14em}
+/* 1マス目だけ地色を敷いて「まずここ」を示す */
+.t.main{background:var(--canvas)}
+.t.main img{width:300px;height:auto}
+.t.main h2{margin-top:40px}
+</style>
+</head>
+<body>
+<div class="grid">
+
+  <!-- A 写真で育て方相談 -->
+  <div class="t main">
+    <img src="../public/brand/mark_blue.png" alt="">
+    <h2>写真で相談</h2>
+    <p>元気がないときは葉の写真を</p>
+    <span class="en">ASK WITH A PHOTO</span>
+  </div>
+
+  <!-- B 育て方のきほん -->
+  <div class="t">
+    <svg viewBox="0 0 48 48"><path d="M24 7c6.4 8.1 10.8 13.6 10.8 19.2a10.8 10.8 0 0 1-21.6 0C13.2 20.6 17.6 15.1 24 7z"/><path d="M19 28.5a5.4 5.4 0 0 0 5 4.6"/></svg>
+    <h2>水やり・置き場所</h2>
+    <p>買った鉢の育て方</p>
+    <span class="en">CARE GUIDE</span>
+  </div>
+
+  <!-- C 佐賀駅のお店 -->
+  <div class="t">
+    <svg viewBox="0 0 48 48"><rect x="13" y="7" width="22" height="26" rx="4"/><path d="M13 22h22"/><circle cx="18.5" cy="27.5" r="1.4"/><circle cx="29.5" cy="27.5" r="1.4"/><path d="M17.5 12.5h13"/><path d="M17 33l-4 8M31 33l4 8M15 38h18"/></svg>
+    <h2>佐賀駅のお店</h2>
+    <p>場所・買い方・お支払い</p>
+    <span class="en">SAGA STATION SHOP</span>
+  </div>
+
+  <!-- D 南佐賀の本店 -->
+  <div class="t">
+    <svg viewBox="0 0 48 48"><path d="M7 21L24 8l17 13"/><path d="M11 18.5V40h26V18.5"/><path d="M20 40V29h8v11"/><path d="M24 21.5c-2.8-.3-4.6-2.4-4.6-5 2.6 0 4.6 1.9 4.6 5zM24 21.5c2.8-.3 4.6-2.4 4.6-5-2.6 0-4.6 1.9-4.6 5z"/></svg>
+    <h2>南佐賀の本店</h2>
+    <p>営業時間・地図</p>
+    <span class="en">OUR MAIN STORE</span>
+  </div>
+
+  <!-- E ワークショップ -->
+  <div class="t">
+    <svg viewBox="0 0 48 48"><path d="M15 31h18l-2.5 10h-13z"/><path d="M24 31V18"/><path d="M24 24c-5.5-.6-8.8-4.6-8.8-9.4 4.8 0 8.8 3.4 8.8 9.4zM24 21c5.5-.6 8.8-4.6 8.8-9.4-4.8 0-8.8 3.4-8.8 9.4z"/><path d="M8 13l3 3M40 13l-3 3M24 4v3.5"/></svg>
+    <h2>ワークショップ</h2>
+    <p>寄せ植え・苔玉など</p>
+    <span class="en">WORKSHOPS</span>
+  </div>
+
+  <!-- F Instagram -->
+  <div class="t">
+    <svg viewBox="0 0 48 48"><rect x="9" y="9" width="30" height="30" rx="8"/><circle cx="24" cy="24" r="7"/><circle cx="32.5" cy="15.5" r="1.3"/></svg>
+    <h2>入荷のお知らせ</h2>
+    <p>Instagramで毎週更新</p>
+    <span class="en">NEW ARRIVALS</span>
+  </div>
+
+</div>
+</body>
+</html>

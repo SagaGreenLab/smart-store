@@ -4,8 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ShopHeader, ShopFooter, Eyebrow } from "@/components/Brand";
-
-const LINE_URL = process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ?? "";
+import { LINE_ADD_FRIEND_URL as LINE_URL } from "@/lib/line";
 
 /**
  * ⑤ 決済エラー
