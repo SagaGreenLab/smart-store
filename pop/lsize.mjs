@@ -44,4 +44,25 @@ for (const j of JOBS) {
     .toFile(file);
   console.log(path.relative(here, file));
 }
+
+// お買いもののしかた A5（A4版を縮小。A4→A5 は同じ比率）
+const a5Dir = path.join(here, "out/print");
+await page.goto(pathToFileURL(path.join(htmlDir, "03_how-to-shop_A4.html")).href, { waitUntil: "networkidle" });
+await page.addStyleTag({ content: ".cell{outline:none!important}" });
+await page.evaluate(() => document.fonts.ready);
+const a4 = await (await page.$("article.how")).screenshot(); // A4 全面
+await sharp(a4)
+  .resize({ width: 1748, height: 2480, fit: "fill" }) // A5 300dpi
+  .withMetadata({ density: 300 })
+  .jpeg({ quality: 95 })
+  .toFile(path.join(a5Dir, "03b_how-to-shop_A5.jpg"));
+// PDF は A4 のレイアウトを zoom で 1/√2 にして A5 用紙へ（文字はベクターのまま）
+await page.addStyleTag({ content: "@page{size:A5;margin:0} html{zoom:0.7071}" });
+await page.pdf({
+  path: path.join(a5Dir, "03b_how-to-shop_A5.pdf"),
+  preferCSSPageSize: true,
+  printBackground: true,
+  pageRanges: "1",
+});
+console.log("out/print/03b_how-to-shop_A5.pdf / .jpg");
 await browser.close();
