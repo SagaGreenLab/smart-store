@@ -28,6 +28,9 @@
     },
     "03_オベサ": {
       "euphorbia-obesa": 15
+    },
+    "04_貼り直し_ガジュマルM": {
+      "gajumaru-m": 3
     }
   },
   "_note_l11Sheets": "L11 お会計QRシール（A4に40枚）。シート名ごとに「商品ID: 枚数」を書くと labels/L11_22.5x52_<シート名>.pdf ができる。40枚を超えると2ページ目に続く。商品IDは lib/products.ts の id。"
