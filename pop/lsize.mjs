@@ -21,6 +21,7 @@ const L = { land: [1500, 1051], port: [1051, 1500] };
 const JOBS = [
   { name: "L_line-card", html: "05_cards_camera-line_91x55.html", sel: "article.line", size: L.land, fill: 0.92 },
   { name: "L_camera", html: "05_cards_camera-line_91x55.html", sel: "article.cam", size: L.land, fill: 0.92 },
+  { name: "L_payment", html: "04_payment_A5.html", sel: "article.pay", size: L.land, fill: 0.96 },
   { name: "L_how-to-shop", html: "03_how-to-shop_A4.html", sel: "article.how", size: L.port, fill: 0.96 },
 ];
 
