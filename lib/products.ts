@@ -24,6 +24,33 @@ export type Product = {
 };
 
 export const PRODUCTS: Product[] = [
+  /* ---------- 2026-11 佐賀駅 追加入荷（3） ---------- */
+  {
+    id: "pothos-enjoy",
+    name: "ポトス エンジョイ",
+    latin: "Epipremnum aureum 'N'Joy'",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり",
+    story:
+      "白い斑がくっきり入る、小さめの葉のポトス。つるが伸びてきたら、棚の上から垂らして楽しんでください。",
+    stock: 10,
+  },
+  {
+    id: "gajumaru-3480",
+    name: "ガジュマル",
+    latin: "Ficus microcarpa",
+    price: 3480,
+    potSize: "鉢植え",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり。冬は控えめに",
+    story:
+      "ぷっくりした根がかわいい、沖縄では「精霊が宿る木」と呼ばれる縁起もの。丈夫で育てやすく、贈りものにもおすすめです。",
+    stock: 10,
+  },
   /* ---------- 2026-11 佐賀駅 追加入荷（2） ---------- */
   {
     id: "euphorbia-obesa",

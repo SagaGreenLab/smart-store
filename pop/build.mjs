@@ -460,9 +460,11 @@ async function main() {
     // L11 は config.json の l11Sheets（シート名: { 商品ID: 枚数 }）があれば、シートごとにその順と枚数で面付けする
     const plans = L.id === "L11" && config.l11Sheets && Object.keys(config.l11Sheets).length ? Object.entries(config.l11Sheets) : [["", null]];
     for (const [sheetName, plan] of plans) {
-      if (plan) for (const id of Object.keys(plan)) if (!products.some((p) => p.id === id)) throw new Error(`l11Sheets.${sheetName}: 商品ID "${id}" が lib/products.ts にない`);
+      // 同じ商品を別の位置にもう一度並べたいときは "商品ID#メモ"（例: "pachira-s#予備"）と書く
+      const pid = (key) => key.split("#")[0];
+      if (plan) for (const key of Object.keys(plan)) if (!products.some((p) => p.id === pid(key))) throw new Error(`l11Sheets.${sheetName}: 商品ID "${pid(key)}" が lib/products.ts にない`);
       const picked = plan
-        ? Object.entries(plan).flatMap(([id, n]) => Array(n).fill(one[products.findIndex((p) => p.id === id)]))
+        ? Object.entries(plan).flatMap(([key, n]) => Array(n).fill(one[products.findIndex((p) => p.id === pid(key))]))
         : Array.from({ length: f.cols * f.rows }, (_, i) => one[i % one.length]);
       const cells = picked.map((c) =>
         L.shape || L.noCut ? `<div class="cell" style="outline:none;background:none">${c}</div>` : c,
