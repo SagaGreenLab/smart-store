@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LINE_ADD_FRIEND_URL, LINE_BASIC_ID } from "@/lib/line";
 
 /**
  * ブランド共通パーツ
@@ -136,6 +137,18 @@ export function ShopHeader({ backHref }: { backHref?: string }) {
 export function ShopFooter() {
   return (
     <footer className="dg-foot">
+      {/* 全ページ共通のLINE相談の入口（購入後に鉢のQRから戻ってきた人向け） */}
+      <a
+        className="dg-foot-line"
+        href={LINE_ADD_FRIEND_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <b>育て方の相談は LINE で</b>
+        <span>
+          友だち追加 {LINE_BASIC_ID}　<em>Ask us on LINE</em>
+        </span>
+      </a>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className="tagline"
