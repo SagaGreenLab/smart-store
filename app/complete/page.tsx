@@ -8,8 +8,7 @@ import {
   getLastOrderServerSnapshot,
 } from "@/lib/cart";
 import { ShopHeader, ShopFooter } from "@/components/Brand";
-
-const LINE_URL = process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ?? "";
+import { LINE_ADD_FRIEND_URL as LINE_URL } from "@/lib/line";
 
 /** ④ お支払い完了 */
 export default function CompletePage() {
@@ -74,11 +73,16 @@ export default function CompletePage() {
       {/* 無人店では、ここが唯一の接客チャネル */}
       <section className="dg-card">
         <div className="dg-line">
-          <span className="qr">
-            LINE
-            <br />
-            友だち追加QR
-          </span>
+          <a
+            href={LINE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="qr has-img"
+            aria-label="LINEで友だち追加する"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/line_qr.svg" alt="LINE友だち追加QRコード" width={76} height={76} />
+          </a>
 
           <span className="body">
             <b>育て方に迷ったら</b>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LINE_ADD_FRIEND_URL, LINE_BASIC_ID } from "@/lib/line";
 
 /**
  * ブランド共通パーツ
@@ -136,6 +137,31 @@ export function ShopHeader({ backHref }: { backHref?: string }) {
 export function ShopFooter() {
   return (
     <footer className="dg-foot">
+      {/* 全ページ共通のLINE相談の入口（購入後に鉢のQRから戻ってきた人向け） */}
+      <div className="dg-foot-line">
+        <p className="lead">
+          育て方に迷ったら、写真を送ってください
+          <small>Ask us about plant care on LINE</small>
+        </p>
+        <a
+          className="dg-btn-line"
+          href={LINE_ADD_FRIEND_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5 1.1-.5 5.9-3.5 8.1-6C21.6 14.2 22 12.6 22 11c0-4.4-4.5-8-10-8z"
+            />
+          </svg>
+          <span className="tx">
+            LINEで相談する
+            <small>友だち追加 {LINE_BASIC_ID}・相談無料</small>
+          </span>
+          <span className="chev" aria-hidden="true">›</span>
+        </a>
+      </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className="tagline"

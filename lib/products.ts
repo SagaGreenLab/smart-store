@@ -64,6 +64,7 @@ export const PRODUCTS: Product[] = [
     story:
       "まんまるの姿から「野球ボール」とも呼ばれる多肉植物。よく日に当てて、乾かし気味に育てるのがコツです。",
     stock: 15,
+    image: "/images/products/euphorbia-obesa.jpg",
   },
   /* ---------- 2026-11 佐賀駅 追加入荷 ----------
    * 価格：Sサイズ 980円／Mサイズ 1,180円／アスプレニウム 2,480円／トキワシノブ 1,980円
@@ -80,6 +81,7 @@ export const PRODUCTS: Product[] = [
     story:
       "波打つ葉がきれいなシダの仲間。葉に霧吹きをしてあげると、つやつやの緑が長もちします。",
     stock: 2,
+    image: "/images/products/asplenium.jpg",
   },
   {
     id: "tokiwashinobu",
@@ -93,6 +95,7 @@ export const PRODUCTS: Product[] = [
     story:
       "鉢のふちからのぞく、白くふさふさした根茎が魅力のシダ。湿り気のある空気が好きです。",
     stock: 2,
+    image: "/images/products/tokiwashinobu.jpg",
   },
   {
     id: "gajumaru-s",
@@ -106,6 +109,7 @@ export const PRODUCTS: Product[] = [
     story:
       "ぷっくりした根がかわいい、沖縄では「精霊が宿る木」と呼ばれる縁起もの。丈夫で育てやすい一鉢です。",
     stock: 10,
+    image: "/images/products/gajumaru-s.jpg",
   },
   {
     id: "pachira-s",
@@ -119,6 +123,7 @@ export const PRODUCTS: Product[] = [
     story:
       "手のひらのような葉を広げる定番の観葉植物。伸びたら切り戻して、好みの形に育てられます。",
     stock: 6,
+    image: "/images/products/pachira-s.jpg",
   },
   {
     id: "peperomia-s",
@@ -132,6 +137,7 @@ export const PRODUCTS: Product[] = [
     story:
       "肉厚の葉に水をためこむタイプ。乾かし気味に育てるのが長もちのコツです。",
     stock: 4,
+    image: "/images/products/peperomia-s.jpg",
   },
   {
     id: "gajumaru-m",
@@ -145,6 +151,7 @@ export const PRODUCTS: Product[] = [
     story:
       "ぷっくりした根がかわいい、沖縄では「精霊が宿る木」と呼ばれる縁起もの。丈夫で育てやすい一鉢です。",
     stock: 4,
+    image: "/images/products/gajumaru-m.jpg",
   },
   {
     id: "sansevieria-m",
@@ -158,6 +165,7 @@ export const PRODUCTS: Product[] = [
     story:
       "水やりを忘れても平気なくらい丈夫です。すっと立つ葉が、置くだけで空気を引きしめてくれます。",
     stock: 3,
+    image: "/images/products/sansevieria-m.jpg",
   },
   {
     id: "peperomia-m",
@@ -171,6 +179,7 @@ export const PRODUCTS: Product[] = [
     story:
       "肉厚の葉に水をためこむタイプ。乾かし気味に育てるのが長もちのコツです。",
     stock: 4,
+    image: "/images/products/peperomia-m.jpg",
   },
   {
     id: "asparagus-m",
@@ -184,6 +193,7 @@ export const PRODUCTS: Product[] = [
     story:
       "霧のようにふわふわの葉。乾燥が苦手なので、ときどき霧吹きをしてあげると元気に育ちます。",
     stock: 3,
+    image: "/images/products/asparagus-m.jpg",
   },
   {
     id: "cordyline-m",
@@ -197,6 +207,7 @@ export const PRODUCTS: Product[] = [
     story:
       "赤や黄色の葉色が一鉢ごとに少しずつ違います。お気に入りの色を選んでください。",
     stock: 4,
+    image: "/images/products/cordyline-m.jpg",
   },
   /* ---------- 2026-11 佐賀駅 初回入荷 ----------
    * 価格：Sサイズ（当店で植え込み）980円／Mサイズ 1,180円／Mのペペロミア 1,680円／ヒボタン 980円
@@ -213,6 +224,7 @@ export const PRODUCTS: Product[] = [
     story:
       "上の赤い玉がヒボタン、下の緑は台木のサボテン。接ぎ木でいっしょに育っています。よく日に当てると色が長もちします。",
     stock: 10,
+    image: "/images/products/hibotan.jpg",
   },
   {
     id: "peperomia",
@@ -226,6 +238,7 @@ export const PRODUCTS: Product[] = [
     story:
       "スイカの皮のような葉もようから「スイカペペ」とも。葉に水をためこむので、乾かし気味が長もちのコツです。",
     stock: 4,
+    image: "/images/products/peperomia.jpg",
   },
   {
     id: "ficus-ruby",
@@ -239,6 +252,7 @@ export const PRODUCTS: Product[] = [
     story:
       "新しい葉ほどピンクが濃く出ます。明るい場所に置くと、色がきれいにのってきます。",
     stock: 4,
+    image: "/images/products/ficus-ruby.jpg",
   },
   {
     id: "schefflera",
@@ -252,6 +266,7 @@ export const PRODUCTS: Product[] = [
     story:
       "とても丈夫な斑入りのカポック。多少の水やり忘れでもへこたれない、はじめての方にもおすすめの一鉢です。",
     stock: 3,
+    image: "/images/products/schefflera.jpg",
   },
   {
     id: "pachira",
@@ -265,6 +280,7 @@ export const PRODUCTS: Product[] = [
     story:
       "ぷっくりした幹から手のひらのような葉を広げます。伸びたら切り戻して、好みの形に育てられます。",
     stock: 4,
+    image: "/images/products/pachira.jpg",
   },
   {
     id: "asparagus",
@@ -278,6 +294,7 @@ export const PRODUCTS: Product[] = [
     story:
       "霧のようにふわふわの葉。乾燥が苦手なので、ときどき霧吹きをしてあげると元気に育ちます。",
     stock: 2,
+    image: "/images/products/asparagus.jpg",
   },
   {
     id: "cordyline",
@@ -291,6 +308,7 @@ export const PRODUCTS: Product[] = [
     story:
       "赤や黄色の葉色が一鉢ごとに少しずつ違います。お気に入りの色を選んでください。",
     stock: 4,
+    image: "/images/products/cordyline.jpg",
   },
   {
     id: "everfresh",
@@ -331,6 +349,7 @@ export const PRODUCTS: Product[] = [
     story:
       "水やりを忘れても平気なくらい丈夫です。すっと立つ葉が、置くだけで空気を引きしめてくれます。",
     stock: 3,
+    image: "/images/products/sansevieria.jpg",
   },
   {
     id: "pothos",

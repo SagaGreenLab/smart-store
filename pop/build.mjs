@@ -300,10 +300,17 @@ const PAY_CSS = `
 .pay .col ul{list-style:none;margin-top:2.4mm;font-size:9.6pt;line-height:1.9;color:var(--ink-2)}
 .pay .col .note{font-size:6.6pt;color:var(--ink-3);margin-top:1mm;line-height:1.5}
 .pay .logos{margin-top:auto;height:24mm;border:.15mm dashed var(--rule);border-radius:1.5mm;display:flex;align-items:center;justify-content:center;font-size:7pt;color:var(--ink-3);letter-spacing:.06em}
+.pay .logos.has-img{height:36mm;border:0;border-radius:0}
+.pay .logos.has-img img{max-width:100%;max-height:100%;display:block}
 .pay .cash{margin-top:4mm;display:flex;justify-content:space-between;align-items:baseline}
 .pay .cash b{font-size:13pt;font-weight:500;letter-spacing:.08em;color:var(--ink)}
 .pay .cash span{font-size:8pt;color:var(--ink-2)}
 `;
+// Square 公式の決済ロゴ（加盟店専用 印刷用ロゴ）。pop/assets に置けば点線枠の代わりに入る
+const SQUARE_LOGOS = (() => {
+  const f = path.join(here, "assets", "square_payment_logos.png");
+  return fs.existsSync(f) ? "data:image/png;base64," + fs.readFileSync(f).toString("base64") : "";
+})();
 const payPop = () => `<article class="pay">
   <header><h1>お支払い方法<span class="en">Payment options</span></h1><i class="mark m"></i></header>
   <div class="grid">
@@ -315,7 +322,9 @@ const payPop = () => `<article class="pay">
     <div class="col"><h2>QRコード決済<span class="en">QR code</span></h2>
       <ul><li>PayPay ／ d払い</li><li>楽天ペイ ／ au PAY</li><li>メルペイ</li><li>WeChat Pay ／ Alipay+</li></ul></div>
   </div>
-  <div class="logos">Square 公式「加盟店専用 印刷用ロゴ」をここに貼ってください</div>
+  ${SQUARE_LOGOS
+    ? `<div class="logos has-img"><img src="${SQUARE_LOGOS}" alt="Square 対応ブランド"></div>`
+    : `<div class="logos">Square 公式「加盟店専用 印刷用ロゴ」をここに貼ってください</div>`}
   <p class="cash"><b>現金はつかえません</b><span class="en">No cash accepted.</span></p>
 </article>`;
 
