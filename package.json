@@ -10,7 +10,7 @@
     "pop": "node pop/build.mjs",
     "line": "node line/build.mjs",
     "pop:lsize": "node pop/lsize.mjs",
-    "pop:call": "node pop/call/build.mjs"
+    "pop:call": "node pop/call/build.mjs && node pop/call/combo.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",
