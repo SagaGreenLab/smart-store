@@ -221,6 +221,38 @@ body{
 .dg-btn-text:hover{color:var(--ink)}
 .dg-caption{margin:12px 0 0;font-size:11.5px;line-height:1.8;color:var(--sub);text-align:center}
 
+/* 固定バーなど、横幅の限られた場所に置く小さめのボタン */
+.dg-btn-mini{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  min-height:48px;padding:8px 18px;border:1px solid var(--ink);
+  background:var(--ink);color:#fff;cursor:pointer;border-radius:2px;flex:none;
+  font-family:var(--jp);font-size:14px;font-weight:500;letter-spacing:.1em;white-space:nowrap;
+}
+.dg-btn-mini small{font-family:var(--en);font-weight:300;font-size:9.5px;letter-spacing:.08em;opacity:.8}
+.dg-btn-mini:hover{background:#173C80;border-color:#173C80}
+.dg-btn-mini:disabled{background:#AFC2E2;border-color:#AFC2E2;cursor:not-allowed}
+.dg-btn-mini.wide{flex:1}
+
+/* --------------------------------------------------------------------------
+   画面下に固定するカート導線（商品ページ）
+
+   QRを読んだ直後、お客様は「次に何をすればいいか」が分からない。
+   スクロール位置に関係なく常に押せる場所に置くことで、その迷いをなくす。
+   金額も一緒に出し、「いくらの何を買うのか」が常に見えている状態にする。
+   -------------------------------------------------------------------------- */
+.dg-dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;
+  background:rgba(255,255,255,.96);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-top:1px solid var(--rule);
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+.dg-dock .dock-in{max-width:390px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.dg-dock .dg-price{flex:none}
+
+/* 固定バーにフッターが隠れないよう、ページ側に高さぶんの余白を足す */
+.dg-wrap.has-dock{padding-bottom:104px}
+
 /* --------------------------------------------------------------------------
    現金不可・エラー：唯一の二色目
    -------------------------------------------------------------------------- */
@@ -330,8 +362,6 @@ body{
   display:grid;place-items:center;text-align:center;
   font-size:9.5px;line-height:1.5;letter-spacing:.04em;color:var(--sub);
 }
-.dg-line .qr.has-img{border:0;padding:0}
-.dg-line .qr.has-img img{display:block;width:100%;height:100%}
 .dg-line .body{display:flex;flex-direction:column;gap:4px;min-width:0}
 .dg-line .body b{font-weight:500;font-size:14.5px;letter-spacing:.1em;color:var(--ink)}
 .dg-line .body p{margin:0;font-size:12px;line-height:1.75;color:var(--ink-2)}
@@ -403,20 +433,6 @@ body{
    フッター
    -------------------------------------------------------------------------- */
 .dg-foot{margin-top:34px;text-align:center}
-/* LINE相談の入口：押せると一目で分かるよう、ここだけ LINE の緑を使う */
-.dg-foot-line{margin:0 0 30px;padding-top:22px;border-top:1px solid var(--rule)}
-.dg-foot-line .lead{margin:0 0 12px;font-size:13px;letter-spacing:.08em;color:var(--ink);line-height:1.6}
-.dg-foot-line .lead small{display:block;font-family:var(--en);font-weight:300;font-size:10px;letter-spacing:.08em;color:var(--sub)}
-.dg-btn-line{
-  display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:10px 18px;
-  background:#06C755;color:#fff;border-radius:6px;text-decoration:none;text-align:left;
-  box-shadow:0 2px 0 #05A647;
-}
-.dg-btn-line:active{transform:translateY(2px);box-shadow:none}
-.dg-btn-line svg{flex:none}
-.dg-btn-line .tx{flex:1;font-family:var(--jp);font-size:16px;font-weight:500;letter-spacing:.1em;line-height:1.35}
-.dg-btn-line .tx small{display:block;font-size:11px;font-weight:400;letter-spacing:.04em;opacity:.92}
-.dg-btn-line .chev{flex:none;font-size:28px;line-height:1;font-weight:300}
 .dg-foot .tagline{width:200px;height:auto;margin:0 auto;display:block;opacity:.75}
 .dg-foot p{
   margin:12px 0 0;font-size:10px;letter-spacing:.1em;color:var(--sub);line-height:2;
