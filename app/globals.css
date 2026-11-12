@@ -362,6 +362,8 @@ body{
   display:grid;place-items:center;text-align:center;
   font-size:9.5px;line-height:1.5;letter-spacing:.04em;color:var(--sub);
 }
+.dg-line .qr.has-img{border:0;padding:0}
+.dg-line .qr.has-img img{display:block;width:100%;height:100%}
 .dg-line .body{display:flex;flex-direction:column;gap:4px;min-width:0}
 .dg-line .body b{font-weight:500;font-size:14.5px;letter-spacing:.1em;color:var(--ink)}
 .dg-line .body p{margin:0;font-size:12px;line-height:1.75;color:var(--ink-2)}
@@ -428,6 +430,24 @@ body{
 .dg-mt-3{margin-top:18px}
 .dg-mt-4{margin-top:26px}
 .dg-mt-5{margin-top:38px}
+
+/* --------------------------------------------------------------------------
+   フッターのLINE相談の入口
+   押せると一目で分かるよう、ここだけ LINE の緑を使う
+   -------------------------------------------------------------------------- */
+.dg-foot-line{margin:0 0 30px;padding-top:22px;border-top:1px solid var(--rule)}
+.dg-foot-line .lead{margin:0 0 12px;font-size:13px;letter-spacing:.08em;color:var(--ink);line-height:1.6}
+.dg-foot-line .lead small{display:block;font-family:var(--en);font-weight:300;font-size:10px;letter-spacing:.08em;color:var(--sub)}
+.dg-btn-line{
+  display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:10px 18px;
+  background:#06C755;color:#fff;border-radius:6px;text-decoration:none;text-align:left;
+  box-shadow:0 2px 0 #05A647;
+}
+.dg-btn-line:active{transform:translateY(2px);box-shadow:none}
+.dg-btn-line svg{flex:none}
+.dg-btn-line .tx{flex:1;font-family:var(--jp);font-size:16px;font-weight:500;letter-spacing:.1em;line-height:1.35}
+.dg-btn-line .tx small{display:block;font-size:11px;font-weight:400;letter-spacing:.04em;opacity:.92}
+.dg-btn-line .chev{flex:none;font-size:28px;line-height:1;font-weight:300}
 
 /* --------------------------------------------------------------------------
    フッター
