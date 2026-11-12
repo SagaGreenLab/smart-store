@@ -51,6 +51,7 @@ export const PRODUCTS: Product[] = [
     story:
       "ぷっくりした根がかわいい、沖縄では「精霊が宿る木」と呼ばれる縁起もの。丈夫で育てやすく、贈りものにもおすすめです。",
     stock: 10,
+    image: "/images/products/gajumaru-3480.jpg",
   },
   /* ---------- 2026-11 佐賀駅 追加入荷（2） ---------- */
   {
