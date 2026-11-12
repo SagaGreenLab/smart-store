@@ -32,7 +32,8 @@ export default async function ProductPage({
   if (!product) notFound();
 
   return (
-    <main className="dg-wrap">
+    // has-dock: 画面下の固定バーにフッターが隠れないよう余白を足す
+    <main className="dg-wrap has-dock">
       <ShopHeader backHref="/" />
 
       <article className="dg-card flush">

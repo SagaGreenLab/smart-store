@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/cart";
 import { NoCashAlert } from "@/components/Brand";
 
-/** 数量ステッパー ＋ カートに入れる（① 商品ページの下部） */
+/**
+ * 数量ステッパー ＋ 画面下に固定したカート導線（① 商品ページ）
+ *
+ * ボタンを本文の下に置くと、QRを読んだ直後の画面には入らない。
+ * 「どう操作すればいいか分からない」という声が実際に出たため、
+ * スクロール位置に関係なく押せるよう画面下に固定している。
+ * 金額も並べて、いくらの何を買うのかが常に見えている状態にする。
+ */
 export default function AddToCartButton({
   id,
   name,
@@ -72,14 +79,27 @@ export default function AddToCartButton({
       </div>
 
       <div className="dg-mt-2">
-        <button type="button" onClick={handleClick} disabled={busy} className="dg-btn">
-          {busy ? "カートへ移動しています…" : "カートに入れる"}
-          {!busy && <small>Add to cart</small>}
-        </button>
+        <NoCashAlert />
       </div>
 
-      <div className="dg-mt-2">
-        <NoCashAlert />
+      {/* 画面下に固定。スクロールしても消えない */}
+      <div className="dg-dock">
+        <div className="dock-in">
+          <p className="dg-price sm" aria-label={`合計 ${price * quantity}円 税込`}>
+            <span className="n">¥{(price * quantity).toLocaleString()}</span>
+            <span className="tax">税込</span>
+          </p>
+
+          <button
+            type="button"
+            onClick={handleClick}
+            disabled={busy}
+            className="dg-btn-mini wide"
+          >
+            {busy ? "移動しています…" : "カートに入れる"}
+            {!busy && <small>Add to cart</small>}
+          </button>
+        </div>
       </div>
     </>
   );
