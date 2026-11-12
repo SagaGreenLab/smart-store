@@ -37,6 +37,7 @@ export const PRODUCTS: Product[] = [
     story:
       "白い斑がくっきり入る、小さめの葉のポトス。つるが伸びてきたら、棚の上から垂らして楽しんでください。",
     stock: 10,
+    image: "/images/products/pothos-enjoy.jpg",
   },
   {
     id: "gajumaru-3480",
