@@ -26,31 +26,70 @@ export const ALLOWED_PAYMENT_TYPES = new Set([
 ]);
 
 /**
+ * 選択肢の中に並べるブランドの印
+ *
+ * 分類名（「電子マネー」など）だけだと、自分の持ち物がどれに入るのか分からない。
+ * 開業前の実地で、QUICPay をお持ちの方が3択の前で迷われた。
+ * 灰色10pxの補足文字では読まれないので、ロゴそのものを出して見つけてもらう。
+ * img が無いブランドは name をそのまま文字で出す。
+ */
+export type ChoiceBrand = { key: string; name: string; img?: string };
+
+/**
  * お客様に選んでいただく決済区分
  *
- * ⚠ アーティファクトには選択画面が無い（端末側で選ぶ想定）が、
- *   Square Terminal API の checkout 作成には paymentType が1つ必要なため、
- *   ②ご注文の確認 に最小限の選択を置いている。要判断事項。
+ * Square Terminal API は「カード／FeliCa／QRコード」のどれで待ち受けるかを
+ * checkout 作成時に1つ指定する必要があり、端末側に委ねる値は用意されていない。
+ * そのため、この3択だけは画面で聞かざるを得ない。
+ *
+ * ただしこの先は端末が引き受ける：
+ *   FELICA_ALL → Suica / iD / QUICPay の別は端末の画面で選べる
+ *   QR_CODE    → PayPay・d払い・楽天ペイ等をまとめた1枚のコードが出る
+ * よって聞くべきは「何でかざすか」までで、ブランドまで選ばせる必要はない。
+ *
+ * 文言の注意：
+ * - 「QRコード決済」とは呼ばない。客は鉢のQRを読んだ直後で、取り違える。
+ * - 交通系IC は「カードでもスマホでも」と添える。iPhoneのSuicaの方が
+ *   「カード・スマホ（Apple Pay）」を選ぶと、FeliCa で待ち受けないため通らない。
  */
 export const PAYMENT_CHOICES: {
   key: PaymentTypeKey;
   label: string;
   sub: string;
+  brands: ChoiceBrand[];
 }[] = [
   {
     key: "CARD_PRESENT",
-    label: "カード・スマホ",
-    sub: "クレジット／Apple Pay／Google Pay",
+    label: "クレジットカード",
+    sub: "カード本体／Apple Pay・Google Pay のカード",
+    brands: [
+      { key: "visa", name: "Visa", img: "/brand/payment/card-visa.png" },
+      { key: "mastercard", name: "Mastercard", img: "/brand/payment/card-mastercard.png" },
+      { key: "jcb", name: "JCB" },
+      { key: "amex", name: "American Express", img: "/brand/payment/card-amex.png" },
+    ],
   },
   {
     key: "FELICA_ALL",
     label: "交通系IC・電子マネー",
-    sub: "Suica／SUGOCA／iD／QUICPay+ ほか",
+    sub: "カードでもスマホでも",
+    brands: [
+      { key: "sugoca", name: "SUGOCA", img: "/brand/payment/ic-sugoca.png" },
+      { key: "suica", name: "Suica", img: "/brand/payment/ic-suica.png" },
+      { key: "id", name: "iD", img: "/brand/payment/em-id.png" },
+      { key: "quicpay", name: "QUICPay+", img: "/brand/payment/em-quicpay.png" },
+    ],
   },
   {
     key: "QR_CODE",
-    label: "QRコード決済",
-    sub: "PayPay／d払い／楽天ペイ ほか",
+    label: "スマホのアプリ",
+    sub: "レジの画面にコードが出ます",
+    brands: [
+      { key: "paypay", name: "PayPay", img: "/brand/payment/qr-paypay.png" },
+      { key: "dbarai", name: "d払い", img: "/brand/payment/qr-dbarai.png" },
+      { key: "rakutenpay", name: "楽天ペイ", img: "/brand/payment/qr-rakutenpay.png" },
+      { key: "aupay", name: "au PAY", img: "/brand/payment/qr-aupay.png" },
+    ],
   },
 ];
 
