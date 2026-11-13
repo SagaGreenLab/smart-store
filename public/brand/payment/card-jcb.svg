@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 96" role="img" aria-label="JCB">
+  <defs>
+    <linearGradient id="jcb-b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B6FC4"/><stop offset="1" stop-color="#0B3E8C"/>
+    </linearGradient>
+    <linearGradient id="jcb-r" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E2414B"/><stop offset="1" stop-color="#C01526"/>
+    </linearGradient>
+    <linearGradient id="jcb-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2FA359"/><stop offset="1" stop-color="#007B3E"/>
+    </linearGradient>
+  </defs>
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="700" font-size="30" fill="#fff" text-anchor="middle">
+    <rect x="2"  y="8" width="40" height="80" rx="7" fill="url(#jcb-b)"/>
+    <rect x="46" y="8" width="40" height="80" rx="7" fill="url(#jcb-r)"/>
+    <rect x="90" y="8" width="40" height="80" rx="7" fill="url(#jcb-g)"/>
+    <text x="22"  y="58">J</text>
+    <text x="66"  y="58">C</text>
+    <text x="110" y="58">B</text>
+  </g>
+  <g fill="#fff" opacity=".92">
+    <path d="M2 70h40v11a7 7 0 0 1-7 7H9a7 7 0 0 1-7-7z" opacity="0"/>
+  </g>
+</svg>

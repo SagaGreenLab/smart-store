@@ -65,7 +65,7 @@ export const PAYMENT_CHOICES: {
     brands: [
       { key: "visa", name: "Visa", img: "/brand/payment/card-visa.png" },
       { key: "mastercard", name: "Mastercard", img: "/brand/payment/card-mastercard.png" },
-      { key: "jcb", name: "JCB" },
+      { key: "jcb", name: "JCB", img: "/brand/payment/card-jcb.svg" },
       { key: "amex", name: "American Express", img: "/brand/payment/card-amex.png" },
     ],
   },
