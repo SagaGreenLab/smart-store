@@ -244,16 +244,23 @@ export default function CartPage() {
                     {choice.label}
                     <small>{choice.sub}</small>
 
-                    {/* ロゴが読み上げから落ちないよう、画像には必ずブランド名を入れる */}
+                    {/*
+                      ロゴは同じ大きさの枠に1つずつ入れる。
+                      枠なしで高さだけ揃えると、横長のVISAに対して
+                      正方形のPayPayが半分の大きさに見えてしまう。
+                      読み上げから落ちないよう、画像には必ずブランド名を入れる。
+                    */}
                     <span className="logos">
-                      {choice.brands.map((brand) =>
-                        brand.img ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img key={brand.key} src={brand.img} alt={brand.name} />
-                        ) : (
-                          <i key={brand.key}>{brand.name}</i>
-                        )
-                      )}
+                      {choice.brands.map((brand) => (
+                        <span key={brand.key} className="chip">
+                          {brand.img ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={brand.img} alt={brand.name} />
+                          ) : (
+                            <i>{brand.name}</i>
+                          )}
+                        </span>
+                      ))}
                     </span>
                   </span>
                 </button>

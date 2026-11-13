@@ -314,16 +314,20 @@ body{
 .dg-choice button.on .dot::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink)}
 .dg-choice button small{display:block;margin-top:2px;font-family:var(--en);font-weight:300;font-size:10px;letter-spacing:.06em;color:var(--sub)}
 /* 分類名ではなく、持ち物のロゴで見つけてもらう。
-   img が無いブランド（JCB）は枠だけ揃えて文字で出す */
-.dg-choice button .logos{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
-.dg-choice button .logos img{
-  height:20px;width:auto;padding:2px 4px;box-sizing:content-box;
+   枠を等分して各ロゴを中で目一杯に拡げる。高さだけ揃えると、
+   横長のVISAに対して正方形のPayPayが半分の大きさに見えてしまう。
+   画像が無いブランドは枠だけ揃えて文字で出す */
+.dg-choice button .logos{display:flex;gap:5px;margin-top:9px}
+.dg-choice button .logos .chip{
+  flex:1 1 0;min-width:0;height:44px;padding:4px;box-sizing:border-box;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
   border:1px solid var(--rule-2);border-radius:2px;background:#fff;
 }
+/* object-fit なら枠の中で縦横比を保ったまま目一杯になる。
+   max-height:100% はグリッドだと行高が内容依存で循環し、効かない */
+.dg-choice button .logos img{width:100%;height:100%;object-fit:contain;display:block}
 .dg-choice button .logos i{
-  height:20px;display:grid;place-items:center;padding:2px 7px;font-style:normal;
-  border:1px solid var(--rule-2);border-radius:2px;background:#fff;
-  font-family:var(--en);font-size:10.5px;color:var(--ink-2);
+  font-style:normal;font-family:var(--en);font-size:11px;color:var(--ink-2);
 }
 
 /* --------------------------------------------------------------------------
