@@ -221,9 +221,14 @@ export default function CartPage() {
             <NoCashAlert />
           </div>
 
-          {/* Square Terminal API が paymentType を要求するため、ここで区分だけ選んでいただく */}
+          {/*
+            Square Terminal API が paymentType を要求するため、ここで区分だけ選んでいただく。
+            分類名だけ並べると自分の持ち物がどれに入るか分からないので、
+            各選択肢の中に実際のブランドロゴを出して、読まずに見つけられるようにする。
+          */}
           <section className="dg-card dg-mt-2">
-            <Eyebrow ja="お支払い方法" en="PAYMENT METHOD" />
+            <Eyebrow ja="お支払いに使うもの" en="WHAT WILL YOU USE?" />
+            <p className="dg-hint">お手持ちのものを選んでください</p>
 
             <div className="dg-choice">
               {PAYMENT_CHOICES.map((choice) => (
@@ -235,9 +240,21 @@ export default function CartPage() {
                   aria-pressed={paymentType === choice.key}
                 >
                   <span className="dot" aria-hidden="true" />
-                  <span>
+                  <span className="t">
                     {choice.label}
                     <small>{choice.sub}</small>
+
+                    {/* ロゴが読み上げから落ちないよう、画像には必ずブランド名を入れる */}
+                    <span className="logos">
+                      {choice.brands.map((brand) =>
+                        brand.img ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img key={brand.key} src={brand.img} alt={brand.name} />
+                        ) : (
+                          <i key={brand.key}>{brand.name}</i>
+                        )
+                      )}
+                    </span>
                   </span>
                 </button>
               ))}
