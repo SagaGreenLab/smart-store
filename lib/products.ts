@@ -24,6 +24,59 @@ export type Product = {
 };
 
 export const PRODUCTS: Product[] = [
+  /* ---------- 2026-11 佐賀駅 追加入荷（4） ---------- */
+  {
+    id: "euphorbia-oncoclada-s",
+    name: "ユーフォルビア オンコクラータ",
+    latin: "Euphorbia oncoclada",
+    price: 1480,
+    potSize: "Sサイズ",
+    height: "—",
+    place: "明るい窓辺（日当たりが好き）",
+    water: "春〜秋は土がしっかり乾いてから。冬は控えめに",
+    story:
+      "鉛筆のような細い茎がつながって伸びる、ユニークな姿の多肉植物。乾かし気味に育てるのがコツです。",
+    stock: 10,
+  },
+  {
+    id: "monstera-thai-constellation",
+    name: "モンステラ タイコンステレーション",
+    latin: "Monstera deliciosa 'Thai Constellation'",
+    price: 3680,
+    potSize: "4号（直径12cm）",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり",
+    story:
+      "星を散らしたようなクリーム色の斑が入る、人気のモンステラ。一枚ごとに斑の出方が違うので、お気に入りの一鉢を選んでください。",
+    stock: 10,
+  },
+  {
+    id: "gymnocalycium-hydro-s",
+    name: "ギムノカリキウム 水耕栽培",
+    latin: "Gymnocalycium",
+    price: 1980,
+    potSize: "Sサイズ",
+    height: "—",
+    place: "明るい窓辺（日当たりが好き）",
+    water: "根の先が少し浸かるくらいの水を。2週間に1回ほど入れ替え",
+    story:
+      "土を使わない水耕栽培のサボテン。透明な容器から根の様子も楽しめます。水は少なめ、日当たりのよい場所でどうぞ。",
+    stock: 10,
+  },
+  {
+    id: "gymnocalycium-hydro-m",
+    name: "ギムノカリキウム 水耕栽培",
+    latin: "Gymnocalycium",
+    price: 2980,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい窓辺（日当たりが好き）",
+    water: "根の先が少し浸かるくらいの水を。2週間に1回ほど入れ替え",
+    story:
+      "土を使わない水耕栽培のサボテン。透明な容器から根の様子も楽しめます。水は少なめ、日当たりのよい場所でどうぞ。",
+    stock: 10,
+  },
   /* ---------- 2026-11 佐賀駅 追加入荷（3） ---------- */
   {
     id: "pothos-enjoy",
