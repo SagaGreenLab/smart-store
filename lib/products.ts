@@ -65,6 +65,7 @@ export const PRODUCTS: Product[] = [
     story:
       "土を使わない水耕栽培のサボテン。透明な容器から根の様子も楽しめます。水は少なめ、日当たりのよい場所でどうぞ。",
     stock: 10,
+    image: "/images/products/gymnocalycium-hydro-s.jpg",
   },
   {
     id: "gymnocalycium-hydro-m",
