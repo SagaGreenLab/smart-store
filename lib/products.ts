@@ -24,6 +24,33 @@ export type Product = {
 };
 
 export const PRODUCTS: Product[] = [
+  /* ---------- 2026-11 佐賀駅 追加入荷（5）クリスマス ---------- */
+  {
+    id: "poinsettia-m",
+    name: "ポインセチア",
+    latin: "Euphorbia pulcherrima",
+    price: 980,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るく暖かい室内（10℃以上・暖房の風が直接当たらない場所）",
+    water: "土の表面が乾いたら たっぷり。受け皿の水は捨てる",
+    story:
+      "冬を彩る赤い葉（苞）が主役のクリスマスの定番。寒さが苦手なので、明るい窓辺の暖かい場所に置くと長く楽しめます。",
+    stock: 20,
+  },
+  {
+    id: "poinsettia-l",
+    name: "ポインセチア",
+    latin: "Euphorbia pulcherrima",
+    price: 1980,
+    potSize: "Lサイズ",
+    height: "—",
+    place: "明るく暖かい室内（10℃以上・暖房の風が直接当たらない場所）",
+    water: "土の表面が乾いたら たっぷり。受け皿の水は捨てる",
+    story:
+      "冬を彩る赤い葉（苞）が主役のクリスマスの定番。寒さが苦手なので、明るい窓辺の暖かい場所に置くと長く楽しめます。",
+    stock: 20,
+  },
   /* ---------- 2026-11 佐賀駅 追加入荷（4） ---------- */
   {
     id: "euphorbia-oncoclada-s",
