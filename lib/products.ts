@@ -37,6 +37,7 @@ export const PRODUCTS: Product[] = [
     story:
       "鉛筆のような細い茎がつながって伸びる、ユニークな姿の多肉植物。乾かし気味に育てるのがコツです。",
     stock: 10,
+    image: "/images/products/euphorbia-oncoclada-s.jpg",
   },
   {
     id: "monstera-thai-constellation",
@@ -50,6 +51,7 @@ export const PRODUCTS: Product[] = [
     story:
       "星を散らしたようなクリーム色の斑が入る、人気のモンステラ。一枚ごとに斑の出方が違うので、お気に入りの一鉢を選んでください。",
     stock: 10,
+    image: "/images/products/monstera-thai-constellation.jpg",
   },
   {
     id: "gymnocalycium-hydro-s",
@@ -76,6 +78,7 @@ export const PRODUCTS: Product[] = [
     story:
       "土を使わない水耕栽培のサボテン。透明な容器から根の様子も楽しめます。水は少なめ、日当たりのよい場所でどうぞ。",
     stock: 10,
+    image: "/images/products/gymnocalycium-hydro-m.jpg",
   },
   /* ---------- 2026-11 佐賀駅 追加入荷（3） ---------- */
   {
