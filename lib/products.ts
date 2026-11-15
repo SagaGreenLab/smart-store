@@ -24,6 +24,46 @@ export type Product = {
 };
 
 export const PRODUCTS: Product[] = [
+  /* ---------- 2026-11 佐賀駅 追加入荷（6） ---------- */
+  {
+    id: "sugarvine-m",
+    name: "シュガーバイン",
+    latin: "Parthenocissus 'Sugar Vine'",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり",
+    story:
+      "手のひらのような5枚の小さな葉が、つるに沿ってやさしく広がります。棚の上から垂らして飾るのもおすすめです。",
+    stock: 10,
+  },
+  {
+    id: "mini-cactus",
+    name: "ミニサボテン",
+    latin: "Cactaceae",
+    price: 580,
+    potSize: "ミニ鉢",
+    height: "—",
+    place: "明るい窓辺（日当たりが好き）",
+    water: "土がしっかり乾いてから。冬は月1回ほど",
+    story:
+      "手のひらにのる小さなサボテン。日当たりのよい窓辺で、水は控えめに育てるのがコツです。",
+    stock: 10,
+  },
+  {
+    id: "usneoides-m",
+    name: "ウスネオイデス",
+    latin: "Tillandsia usneoides",
+    price: 980,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るく風通しのよい室内（直射日光は避ける）",
+    water: "週2〜3回、全体がしっとりするまで霧吹き",
+    story:
+      "土のいらないエアプランツ。銀色の細い葉がふわふわと垂れ下がります。霧吹きのあとは、よく乾かしてあげてください。",
+    stock: 10,
+  },
   /* ---------- 2026-11 佐賀駅 追加入荷（5）クリスマス ---------- */
   {
     id: "poinsettia-m",
