@@ -41,7 +41,7 @@ log=[("11/9 月","22:48","ゴムの木 ルビー（M）","1,180"),("11/10 火","
 ("11/13 金","16:43","ペペロミア（S）＋ヒボタン","1,960"),("","20:35","ガジュマル（S）","980"),("11/14 土","12:30","ペペロミア（S）","980"),("","17:16","アスパラガス","980"),("","18:14","ペペロミア（L）","1,680")]
 logrows="".join(f"<tr><td>{d}</td><td>{t}</td><td>{n}</td><td class=r>{a}円</td></tr>" for d,t,n,a in log)
 itemrows="".join(f"<tr><td>{n}</td><td class=r>{q}</td><td class=r>{v:,}円</td><td class=r>{v/24160:.0%}</td></tr>" for n,v,q in items)
-page=lambda body,no:f'<section class="page">{body}<div class="foot">だいいちえんげいセンター 佐賀駅店　売上レポート（2026年11月9日〜14日）<span>{no} / 4</span></div></section>'
+page=lambda body,no:f'<section class="page">{body}<div class="foot">だいいちえんげいセンター 佐賀駅店　売上レポート（2026年11月9日〜14日）<span>{no} / 5</span></div></section>'
 P1=f'''<div class="kicker">SAGA GREEN 佐賀駅 無人植物ショップ</div>
 <h1>はじめの6日間<br>売上レポート</h1>
 <div class="period">集計期間：2026年11月9日（月）〜14日（土）／ Square決済データより</div>
@@ -82,6 +82,27 @@ P4=f'''<h2>お買い上げの記録</h2><p class="lead">6日間の全20件です
 <li><b>ヒボタンの色違いセット</b>：並べて飾る楽しさを提案します</li>
 <li><b>品ぞろえの見直し</b>：データを2〜4週間ためて、喜ばれる植物を増やしていきます</li></ul></div>
 <p class="thanks">駅で植物を見かけたら、ぜひ手に取ってみてください。<br>これからも、だいいちえんげいセンターをよろしくお願いいたします。🌿</p>'''
+
+planbars=[("損益分岐点",78000,"1日2.1個"),("保守的シナリオ",108000,"1日3個"),("実績ペース",120800,"1日3.7個"),("現実的シナリオ（出店申込書）",252000,"1日7個")]
+P5=f'''<h2>当初の計画とくらべると</h2><p class="lead">2026年3月に作成した出店計画書（JR九州ビルマネジメント様へご提案）の試算と、6日間の実績を月30日に換算した数字をくらべました。</p>
+<div class="chart"><div class="ct">月の売上：計画と実績ペース</div>{hbar(planbars,lab=210,hi={2})}</div>
+<table><thead><tr><th>項目</th><th class=r>計画</th><th class=r>実績ペース</th><th class=r>達成度</th></tr></thead><tbody>
+<tr><td>損益分岐点（月）</td><td class=r>78,000円</td><td class=r>120,800円</td><td class=r>155%</td></tr>
+<tr><td>保守的シナリオ（1日3個）</td><td class=r>108,000円</td><td class=r>120,800円</td><td class=r>112%</td></tr>
+<tr><td>現実的シナリオ（1日7個・出店申込書の見込額）</td><td class=r>252,000円</td><td class=r>120,800円</td><td class=r>48%</td></tr>
+<tr><td>楽観的シナリオ（1日15個）</td><td class=r>540,000円</td><td class=r>120,800円</td><td class=r>22%</td></tr>
+<tr><td>1件あたりの金額</td><td class=r>1,200円</td><td class=r>1,208円</td><td class=r>101%</td></tr>
+<tr><td>1日の販売個数</td><td class=r>7個（現実的）</td><td class=r>3.7個</td><td class=r>52%</td></tr></tbody></table>
+<table><thead><tr><th>実績ペースでの月の収支（計画書と同じ前提）</th><th class=r>金額</th></tr></thead><tbody>
+<tr><td>売上</td><td class=r>120,800円</td></tr>
+<tr><td>原価（30%）・決済手数料（3.5%）・ロス引当（5%）</td><td class=r>▲46,508円</td></tr>
+<tr><td>固定費（家賃30,000円・システム・交通費）</td><td class=r>▲48,000円</td></tr>
+<tr class=tot><td>営業利益（利益率22%）</td><td class=r>約26,300円</td></tr></tbody></table>
+<div class="hl"><h3>まとめ</h3><ul>
+<li><b>黒字ラインは開店直後からクリア</b>。1件あたりの金額も計画どおりで、計画の前提は実績と合っています</li>
+<li>計画との差は<b>「1日に何個売れるか」</b>。出店申込書の見込額に届くには、1日3.7個を<b>7〜8個（約2倍）</b>にすることが目標です</li>
+<li>そのために、帰り道の来店を促すPOP、Lサイズやセット商品の提案、計画にあったドライフラワーの追加に取り組みます</li></ul></div>
+<p class="note">※ 開店から6日間（11/9〜14）の実績を30日に換算した参考値です。11/9は夜の1件のみ。システム利用料は計画書の前提（月8,000円）のまま計算しています。</p>'''
 CSS=f'''@page{{size:A4;margin:0}}*{{box-sizing:border-box}}body{{margin:0;font-family:"IPAPGothic","IPAGothic",sans-serif;color:{INK};background:#fff}}
 .page{{width:210mm;height:297mm;padding:16mm 16mm 14mm;position:relative;page-break-after:always;overflow:hidden}}
 .kicker{{color:{G};font-weight:700;font-size:14px;letter-spacing:.08em}}h1{{font-size:38px;line-height:1.3;margin:8px 0 6px;color:{G}}}
@@ -97,4 +118,4 @@ td{{border-bottom:1px solid {GRID};padding:5px 6px}}.r{{text-align:right}}tr.tot
 .log td,.log th{{padding:3.5px 6px;font-size:12px}}.note{{font-size:12.5px;color:{SUB}}}
 .thanks{{text-align:center;color:{G};font-weight:700;margin-top:10px}}
 .foot{{position:absolute;bottom:8mm;left:16mm;right:16mm;font-size:10px;color:{MUTE};border-top:1px solid {GRID};padding-top:4px}}.foot span{{float:right}}'''
-open("reports/report.html","w").write(f'<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>佐賀駅店 売上レポート</title><style>{CSS}</style></head><body>{page(P1,1)}{page(P2,2)}{page(P3,3)}{page(P4,4)}</body></html>')
+open("reports/report.html","w").write(f'<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>佐賀駅店 売上レポート</title><style>{CSS}</style></head><body>{page(P1,1)}{page(P2,2)}{page(P3,3)}{page(P5,4)}{page(P4,5)}</body></html>')
