@@ -37,6 +37,7 @@ export const PRODUCTS: Product[] = [
     story:
       "冬を彩る赤い葉（苞）が主役のクリスマスの定番。寒さが苦手なので、明るい窓辺の暖かい場所に置くと長く楽しめます。",
     stock: 20,
+    image: "/images/products/poinsettia-m.jpg",
   },
   {
     id: "poinsettia-l",
