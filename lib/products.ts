@@ -24,6 +24,46 @@ export type Product = {
 };
 
 export const PRODUCTS: Product[] = [
+  /* ---------- 2026-11 佐賀駅 追加入荷（7） ---------- */
+  {
+    id: "pilea-m",
+    name: "ピレア・ペペロミオイデス",
+    latin: "Pilea peperomioides",
+    price: 1180,
+    potSize: "Mサイズ",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり",
+    story:
+      "まるいコインのような葉が、くるくると茎から広がります。ときどき鉢を回して、まんべんなく光を当てると形よく育ちます。",
+    stock: 10,
+  },
+  {
+    id: "pachira-figure-s",
+    name: "パキラ（フィギュア付き）",
+    latin: "Pachira glabra",
+    price: 1180,
+    potSize: "Sサイズ（当店で植え込み）",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり。冬は控えめに",
+    story:
+      "小さなフィギュアをそえた、当店で植え込みのミニパキラ。デスクや窓辺に、ちいさな物語をどうぞ。",
+    stock: 10,
+  },
+  {
+    id: "gajumaru-figure-s",
+    name: "ガジュマル（フィギュア付き）",
+    latin: "Ficus microcarpa",
+    price: 1180,
+    potSize: "Sサイズ（当店で植え込み）",
+    height: "—",
+    place: "明るい室内・レースカーテン越し",
+    water: "土の表面が乾いたら たっぷり。冬は控えめに",
+    story:
+      "小さなフィギュアをそえた、当店で植え込みのミニガジュマル。ぷっくりした根もとで、フィギュアがひと休みしています。",
+    stock: 10,
+  },
   /* ---------- 2026-11 佐賀駅 追加入荷（6） ---------- */
   {
     id: "sugarvine-m",
