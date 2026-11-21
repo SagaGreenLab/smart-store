@@ -24,6 +24,33 @@ export type Product = {
 };
 
 export const PRODUCTS: Product[] = [
+  /* ---------- 2026-11 佐賀駅 追加入荷（8） ---------- */
+  {
+    id: "davallia",
+    name: "ダバリア",
+    latin: "Davallia",
+    price: 980,
+    potSize: "鉢植え",
+    height: "—",
+    place: "明るい日陰・室内向き",
+    water: "土の表面が乾いたら たっぷり。葉水も好き",
+    story:
+      "細かく切れこんだ葉と、鉢からはい出すふさふさの根茎がかわいいシダの仲間。乾燥が苦手なので、ときどき霧吹きをしてあげてください。",
+    stock: 20,
+  },
+  {
+    id: "tokiwashinobu-1180",
+    name: "トキワシノブ",
+    latin: "Humata tyermannii",
+    price: 1180,
+    potSize: "鉢植え",
+    height: "—",
+    place: "明るい日陰・室内向き",
+    water: "土の表面が乾いたら たっぷり。葉水も好き",
+    story:
+      "鉢のふちからのぞく、白くふさふさした根茎が魅力のシダ。湿り気のある空気が好きです。",
+    stock: 20,
+  },
   /* ---------- 2026-11 佐賀駅 追加入荷（7） ---------- */
   {
     id: "pilea-m",
