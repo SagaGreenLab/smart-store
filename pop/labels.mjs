@@ -242,8 +242,8 @@ export async function renderLabel(L, p, h) {
         <div class="bt"><div>${qr}</div><div><p>読みとって<br>お会計へ<span class="en">Scan to buy</span></p><i class="mark"></i></div></div>`,
       );
     case "L11": {
-      // 品名・学名は幅（約19mm）に収まる大きさに自動で縮める。長い品名は「・」かスペースで2行に
-      const lines = p.name.length > 9 ? p.name.split(/[・ ]/) : [p.name];
+      // 品名・学名は幅（約19mm）に収まる大きさに自動で縮める。長い品名は「・」・スペース・「（」の前で改行する
+      const lines = p.name.length > 9 ? p.name.replace("（", "\n（").split(/[・ \n]/).filter(Boolean) : [p.name];
       const longest = Math.max(...lines.map((l) => l.length));
       const nmPt = Math.min(7.4, 19 / (longest * 0.3528)).toFixed(2);
       const laPt = Math.min(3.9, 19 / (p.latin.length * 0.3528 * 0.47)).toFixed(2);
